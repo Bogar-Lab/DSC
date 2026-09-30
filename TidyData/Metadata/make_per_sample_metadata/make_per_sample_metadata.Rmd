@@ -257,11 +257,27 @@ core_IDs_fractions = partial_transcribed_june_core_data %>%
   filter(startsWith(Sample_ID, "DSC"))
 ```
 
+break 016 into 016A and 016B
+```{r}
+
+sixteenIndex = which(core_IDs_fractions$Sample_ID == "DSC_016")
+sixteenRowA = core_IDs_fractions[sixteenIndex,] %>%
+  mutate(Sample_ID = "DSC_016A")
+
+sixteenRowB = core_IDs_fractions[sixteenIndex,] %>%
+  mutate(Sample_ID = "DSC_016B")
+
+core_IDs_fractions_16s_fixed = core_IDs_fractions %>%
+  rbind(sixteenRowA) %>%
+  rbind(sixteenRowB) %>%
+  filter(Sample_ID != "DSC_016")
+```
+
 join to metadata
 ```{r}
 metadata_add_coreinfo = xyz_sample_data %>%
   select(!c(Core_ID, fraction, Site)) %>%
-  left_join(core_IDs_fractions, by = "Sample_ID")
+  full_join(core_IDs_fractions_16s_fixed, by = "Sample_ID")
 ```
 
 add a new variable called "microsite" to link tree cores to their non-tree cores
@@ -299,7 +315,6 @@ metadata_add_coreinfo = metadata_add_coreinfo %>%
 ```
 
 parse fractions
-
 ```{r}
 metadata_add_coreinfo <- metadata_add_coreinfo %>%
   mutate(
@@ -313,11 +328,6 @@ metadata_add_coreinfo <- metadata_add_coreinfo %>%
     )
   )
 ```
-
-
-
-
-
 
 # Add moisture data
 ```{r}
@@ -343,6 +353,20 @@ metadata_add_pH = metadata_add_odm %>%
   left_join(pH_tidydata, by = "Sample_ID")
 ```
 
+# Add texture data
+
+```{r}
+kimber_texture = read_csv("../../../Data/Texture/Bogar_Texture.csv")
+
+tex = kimber_texture %>%
+  rename(Sample_ID = long_sample_id) %>%
+  mutate(Sample_ID = stringr::str_remove_all(Sample_ID, "\\s"))
+
+metadata_add_tex = metadata_add_pH %>%
+  left_join(tex, by = "Sample_ID")
+```
+
+
 export most complete metadata csv
 ```{r}
 
@@ -351,7 +375,7 @@ local_path_tidydata <- paste0("Results/",
                      format(Sys.Date(), "%Y%m%d"), 
                      ".csv") #define what this local file name will be, with today's date
 
-write_csv(metadata_add_pH, local_path_tidydata)
+write_csv(metadata_add_tex, local_path_tidydata)
 ```
 
 

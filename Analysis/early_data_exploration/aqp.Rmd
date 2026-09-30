@@ -9,7 +9,7 @@ library(aqp)
 ```
 Read in metadata, rename columns to play nice with aqp()
 ```{r}
-psm = read_csv("../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260819.csv")
+psm = read_csv("../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260930.csv")
 colnames(psm)
 
 psm = psm %>% 
@@ -17,11 +17,12 @@ psm = psm %>%
          id = Core_ID,
          top = sample_top_depth,
          bottom = sample_bottom_depth) %>%
-  filter(!is.na(top))
+  filter(!is.na(top)) %>%
+  mutate(name = stringr::str_remove_all(name, "DSC_"))
 
 depths(psm) <- id ~ top + bottom
-
 ```
+
 # Make crude soil moisture plots
 ```{r}
 plotSPC(psm, 
@@ -43,7 +44,8 @@ horizons(psm) = h
 
 plotSPC(psm, 
         name = 'name',
-        color = 'FM_moisture_percent' )
+        color = 'FM_moisture_percent',
+        name.style = 'center-center')
 ```
 
 # Make crude pH plots
@@ -59,7 +61,8 @@ horizons(psm) = h
 plotSPC(psm, 
         name = 'name',
         color = 'pH', 
-        col.palette = hcl.colors(14, "Harmonic"))
+        col.palette = hcl.colors(14, "Harmonic"),
+        name.style = 'center-center')
 ```
 ```{r}
 library(aqp)
@@ -85,7 +88,8 @@ plotSPC(
   name = 'name',
   color = 'pH', 
   col.palette = hcl.colors(14, "Harmonic"),
-  plot.order = hierarchical_order
+  plot.order = hierarchical_order,
+  name.style = 'center-center'
 )
 ```
 
@@ -107,7 +111,8 @@ horizons(psm) = h
 
 plotSPC(psm, 
         name = 'name',
-        color = 'Lroot_relative' )
+        color = 'Lroot_relative',
+        name.style = 'center-center')
 
 # ok some of these NAs should be 0s (where there were no roots so nothing was written) but some of them are because we forgot to weight; need to go into notes and tidy this
 ```
@@ -134,7 +139,8 @@ horizons(psm) <- h
 plotSPC(psm, 
         name = 'name',
         color = 'rock_relative',
-        col.label = 'g 4mm+ rock per cm^3')
+        col.label = 'g 4mm+ rock per cm^3',
+        name.style = 'center-center')
 ```
 
 ok data cleaning to-do
@@ -144,7 +150,43 @@ ok data cleaning to-do
     - add O thicknesses
 - clean up NAs in lroot and rock masses; which are actually 0?
 - add Lroot and rock masses (with empty masses subtracted) to main psm csv
-    
+
+# Make crude texture plots
+```{r}
+# 2. Extract Site and microsite from horizons (getting 1 row per profile)
+h_site_info <- horizons(psm) %>%
+  group_by(id) %>% # replace 'id' with your profile ID column if different (e.g., idcol(psm))
+  dplyr::slice(1) %>%
+  ungroup()
+
+# 3. Build hierarchical plot order (Site, then microsite)
+hierarchical_order <- order(h_site_info$Site, h_site_info$microsite)
+
+plotSPC(psm, 
+        name = 'name',
+        color = 'pct_clay',
+        name.style = 'center-center',
+        plot.order = hierarchical_order)
+```
+
+```{r}
+plotSPC(psm, 
+        name = 'name',
+        color = 'pct_sand',
+        name.style = 'center-center',
+        plot.order = hierarchical_order)
+```
+
+```{r}
+plotSPC(psm, 
+        name = 'name',
+        color = 'pct_silt',
+        name.style = 'center-center',
+        plot.order = hierarchical_order)
+```
+
+
+  
 # Make crude rock mass plot
 ```{r}
 
@@ -153,19 +195,20 @@ psm_noO <- subsetHz(psm, bottom != 0)
 # Extract and filter
 h <- horizons(psm_noO)
 
-h$Sample_ID
+h$name
 
 # 3. Build hierarchical plot order (Site, then microsite)
 hierarchical_order <- order(h_site_info$Site, h_site_info$microsite)
 
 # Re-assign using replaceHorizons to enforce validation
-replaceHorizons(psm) <- noO
+replaceHorizons(psm) <- psm_noO
 
 plotSPC(psm_noO, 
         color = 'tnt',
         col.label = '',
         plot.order = hierarchical_order,
-        col.palette = hcl.colors(2, "Harmonic"))
+        col.palette = hcl.colors(2, "Harmonic"),
+        name.style = 'center-center')
 ```
 
 ```{r}

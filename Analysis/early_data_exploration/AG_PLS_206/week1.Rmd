@@ -1,0 +1,14 @@
+---
+title: "week1"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+read_csv("../../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260819.csv")
+```
+
+
