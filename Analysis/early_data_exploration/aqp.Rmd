@@ -187,7 +187,8 @@ plotSPC(psm,
 
 
   
-# Make crude rock mass plot
+# Make crude depth plot without O horizons
+## (based on target depts for each fraction, not actual depths)
 ```{r}
 
 psm_noO <- subsetHz(psm, bottom != 0)
@@ -201,7 +202,7 @@ h$name
 hierarchical_order <- order(h_site_info$Site, h_site_info$microsite)
 
 # Re-assign using replaceHorizons to enforce validation
-replaceHorizons(psm) <- psm_noO
+replaceHorizons(psm) <- horizons(psm_noO)
 
 plotSPC(psm_noO, 
         color = 'tnt',
@@ -214,7 +215,6 @@ plotSPC(psm_noO,
 ```{r}
 write_rds(psm, "Results/plotSPC_object_June.rds")
 write_rds(psm_noO, "Results/plotSPC_object_June_noO.rds")
-
 ```
 
 
