@@ -4,7 +4,7 @@ Data tidying and analysis for the UC Davis Bogar Lab's NSF-MMORCC "Deep Soil Car
 
 Where things are:
 
-- Original data (scanned datasheets, lab notebooks, photos) --> Bogar Lab **Google Drive**
+- Original data (scanned datasheets, scanned notes, photos) --> Bogar Lab **Google Drive**
 - Transcribed data --> Bogar Lab **Google Drive** (google sheets) AND **here**, in TidyData/[relevant category]/Inputs
 \n
 - Tidied data --> **here**, TidyData/
