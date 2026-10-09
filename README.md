@@ -19,16 +19,12 @@ Where things are:
 For contributors:
 
 - Create a new branch when:
-  - You're editing anything in TidyData (these files are upstream of most things in Analysis)
+  - You're editing files in TidyData/ (these are upstream of most other things)
 
 - Write your code in .Rmd files, with the following settings/fomrat
   - "knit on save" selected
-  - output set to "github_document", such that the header looks something like:
----
-title: "pH_analysis"
-output: github_document
----
-  - ideally, name your code chunks -- at least the ones that produce
+  - output set to "github_document". In the header, replace "output: html_document" with "output: github_document"
+  - ideally, name your code chunks -- at least the ones that produce figures
 
 - Use this Google Drive integration! 
     - Only use data files which are a) on the Google Drive (see below) or b) in this repository already
