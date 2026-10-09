@@ -140,7 +140,7 @@ plotSPC(psm,
         color = 'FM_moisture_percent' )
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/moisture-1.png)<!-- -->
 
 ``` r
 # mask the all-root sample because it's throwing off the color scale
@@ -160,7 +160,7 @@ plotSPC(psm,
         name.style = 'center-center')
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/moisture_omit_root-1.png)<!-- -->
 
 # Make crude pH plots
 
@@ -179,7 +179,7 @@ plotSPC(psm,
         name.style = 'center-center')
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/pH1-1.png)<!-- -->
 
 ``` r
 library(aqp)
@@ -210,7 +210,7 @@ plotSPC(
 )
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/pH2-1.png)<!-- -->
 
 # Make crude Lroot plot
 
@@ -244,7 +244,7 @@ plotSPC(psm,
         name.style = 'center-center')
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/Lroot-1.png)<!-- -->
 
 ``` r
 # ok some of these NAs should be 0s (where there were no roots so nothing was written) but some of them are because we forgot to weight; need to go into notes and tidy this
@@ -286,7 +286,7 @@ plotSPC(psm,
         name.style = 'center-center')
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/rock-1.png)<!-- -->
 
 ok data cleaning to-do - make depths actual; use core data to adjust
 bottom depths of bottommost samples. Account for shoes - deal with
@@ -314,7 +314,7 @@ plotSPC(psm,
         plot.order = hierarchical_order)
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/clay-1.png)<!-- -->
 
 ``` r
 plotSPC(psm, 
@@ -324,7 +324,7 @@ plotSPC(psm,
         plot.order = hierarchical_order)
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/sand-1.png)<!-- -->
 
 ``` r
 plotSPC(psm, 
@@ -334,7 +334,7 @@ plotSPC(psm,
         plot.order = hierarchical_order)
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/silt-1.png)<!-- -->
 
 # Make crude depth plot without O horizons
 
@@ -374,7 +374,7 @@ plotSPC(psm_noO,
         name.style = 'center-center')
 ```
 
-![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](plotSPC_test_figures_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
 write_rds(psm, "Results/plotSPC_object_June.rds")

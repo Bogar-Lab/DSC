@@ -24,13 +24,13 @@ depths(psm) <- id ~ top + bottom
 ```
 
 # Make crude soil moisture plots
-```{r}
+```{r moisture}
 plotSPC(psm, 
         name = 'name',
         color = 'FM_moisture_percent' )
 ```
 
-```{r}
+```{r moisture_omit_root}
 # mask the all-root sample because it's throwing off the color scale
 h = horizons(psm)
 h$FM_moisture_percent = as.numeric(h$FM_moisture_percent)
@@ -50,7 +50,7 @@ plotSPC(psm,
 
 # Make crude pH plots
 
-```{r}
+```{r pH1}
 # use average of two pH measurements for each sample
 h = horizons(psm)
 h = h %>% mutate(
@@ -64,7 +64,7 @@ plotSPC(psm,
         col.palette = hcl.colors(14, "Harmonic"),
         name.style = 'center-center')
 ```
-```{r}
+```{r pH2}
 library(aqp)
 library(dplyr)
 
@@ -94,7 +94,7 @@ plotSPC(
 ```
 
 # Make crude Lroot plot 
-```{r}
+```{r Lroot}
 
 # make Lroot mass numeric
 h = horizons(psm)
@@ -117,7 +117,7 @@ plotSPC(psm,
 # ok some of these NAs should be 0s (where there were no roots so nothing was written) but some of them are because we forgot to weight; need to go into notes and tidy this
 ```
 # Make crude rock mass plot
-```{r}
+```{r rock}
 
 # make rock mass numeric
 h = horizons(psm)
@@ -152,7 +152,7 @@ ok data cleaning to-do
 - add Lroot and rock masses (with empty masses subtracted) to main psm csv
 
 # Make crude texture plots
-```{r}
+```{r clay}
 # 2. Extract Site and microsite from horizons (getting 1 row per profile)
 h_site_info <- horizons(psm) %>%
   group_by(id) %>% # replace 'id' with your profile ID column if different (e.g., idcol(psm))
@@ -169,7 +169,7 @@ plotSPC(psm,
         plot.order = hierarchical_order)
 ```
 
-```{r}
+```{r sand}
 plotSPC(psm, 
         name = 'name',
         color = 'pct_sand',
@@ -177,7 +177,7 @@ plotSPC(psm,
         plot.order = hierarchical_order)
 ```
 
-```{r}
+```{r silt}
 plotSPC(psm, 
         name = 'name',
         color = 'pct_silt',
