@@ -21,7 +21,10 @@ local_path <- paste0("Inputs/",
                      format(Sys.Date(), "%Y%m%d"), 
                      ".csv") #define what this local file name will be, with today's date
 
-drive_download(dribble, type = "csv", path = local_path, overwrite = TRUE)
+drive_download(dribble, 
+               type = "csv", 
+               path = local_path, 
+               overwrite = TRUE) # maintains one copy of this file, stored in the inputs folder, per day
 
 x_transcribed_data = read_csv(local_path, col_names = FALSE)
 
@@ -371,7 +374,7 @@ export most complete metadata csv
 ```{r}
 
 local_path_tidydata <- paste0("Results/", 
-                     "DSC_per_sample_metadata_compiled-", 
+                     "DSC_per_sample_metadata_compiled-", # we should uniformly use "tidied" instead of "compiled" for tidydata documents
                      format(Sys.Date(), "%Y%m%d"), 
                      ".csv") #define what this local file name will be, with today's date
 
