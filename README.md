@@ -17,10 +17,12 @@ Where things are:
 
 For contributors:
 
-- Google Drive integration! To to bring transcribed data from google drive into this repo, using library(googledrive) use this code:
-~substitute anything in italics~
+- Google Drive integration! To to bring transcribed data from google drive into this repo, use this code:
+    - substitute these terms: name_of_google_sheet, name_of_google_sheet
 ```{r}
-name_of_transcription_file_on_drive = "~X_sample_data_transcribed~" # copy the file's name exactly as it appears on google drive
+library(googledrive)
+
+name_of_transcription_file_on_drive = "name_of_google_sheet" # copy the file's name exactly as it appears on google drive
 
 dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necesary data for downloading
 
@@ -35,5 +37,5 @@ drive_download(dribble,
                path = local_path, 
                overwrite = TRUE) # maintains one copy of this file, stored in the inputs folder, per day
 
-~x_transcribed_data~ = read_csv(local_path, col_names = FALSE) # reads the csv (now stored on your machine) into your R enviornment
+my_transcribed_data = read_csv(local_path, col_names = FALSE) # reads the csv (now stored on your machine) into your R enviornment
 ```
