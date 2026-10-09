@@ -1,6 +1,8 @@
 ---
 title: "pH_analysis"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 exploratory and messy; 14 Aug 2026 AG 
 
@@ -10,7 +12,7 @@ library(ggplot2)
 ```
 
 ```{r}
-psm = read_csv("../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260814.csv")
+psm = read_csv("../../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260814.csv")
 ```
 
 ```{r}
