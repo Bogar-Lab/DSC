@@ -1,6 +1,6 @@
 ---
 title: "Early DSC June data exploration with plotSPC()"
-output: html_document
+output: github_document
 ---
 
 ```{r}
@@ -9,7 +9,7 @@ library(aqp)
 ```
 Read in metadata, rename columns to play nice with aqp()
 ```{r}
-psm = read_csv("../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260930.csv")
+psm = read_csv("../../../TidyData/Metadata/make_per_sample_metadata/Results/DSC_per_sample_metadata_compiled-20260930.csv")
 colnames(psm)
 
 psm = psm %>% 
