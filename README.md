@@ -2,21 +2,19 @@
 
 Data tidying and analysis for the UC Davis Bogar Lab's NSF-MMORCC "Deep Soil Carbon" project.
 
-Where things are:
+# Where things are:
 
 - Original data (scanned datasheets, scanned notes, photos) --> Bogar Lab **Google Drive**
-- Transcribed data --> Bogar Lab **Google Drive** (google sheets) AND **here**, in TidyData/[relevant category]/Inputs
-\n
-- Tidied data --> **here**, TidyData/
-- Data analysis --> **here**
+- Transcribed data --> Bogar Lab **Google Drive** (google sheets) AND **Github**, in TidyData/[relevant category]/Inputs
+- Tidied data --> **Github**, TidyData/
+- Data analysis --> **Github**
   - Code for analyzing data, making tables, etc: Analysis/
   - Code for making formal figures: Figures/
-- Formal figures and tables --> **here**, in Reports/ AND in /Results sub-folders associated with the scripts that generated them (in Figures/ and Analysis/)
+- Formal figures and tables --> **Github**, in Reports/ AND in /Results sub-folders associated with the scripts that generated them (in Figures/ and Analysis/)
 
 - Prose reports or presentations --> Bogar Lab **Google Drive**
-\n
-\n
-For contributors:
+
+# For contributors:
 
 - Create a new branch when:
   - You're editing files in TidyData/ (these are upstream of most other things)
