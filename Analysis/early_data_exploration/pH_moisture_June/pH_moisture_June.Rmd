@@ -1,8 +1,6 @@
 ---
 title: "pH_analysis"
-output:
-  html_document: default
-  pdf_document: default
+output: github_document
 ---
 exploratory and messy; 14 Aug 2026 AG 
 
