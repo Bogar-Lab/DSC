@@ -2,21 +2,19 @@
 
 Data tidying and analysis for the UC Davis Bogar Lab's NSF-MMORCC "Deep Soil Carbon" project.
 
-Where things are:
+# Where things are:
 
-- Original data (scanned datasheets, lab notebooks, photos) --> Bogar Lab **Google Drive**
-- Transcribed data --> Bogar Lab **Google Drive** (google sheets) AND **here**, in TidyData/[relevant category]/Inputs
-\n
-- Tidied data --> **here**, TidyData/
-- Data analysis --> **here**
+- Original data (scanned datasheets, scanned notes, photos) --> Bogar Lab **Google Drive**
+- Transcribed data --> Bogar Lab **Google Drive** (google sheets) AND **Github**, in TidyData/[relevant category]/Inputs
+- Tidied data --> **Github**, TidyData/
+- Data analysis --> **Github**
   - Code for analyzing data, making tables, etc: Analysis/
   - Code for making formal figures: Figures/
-- Formal figures and tables --> **here**, in Reports/ AND in /Results sub-folders associated with the scripts that generated them (in Figures/ and Analysis/)
+- Formal figures and tables --> **Github**, in Reports/ AND in /Results sub-folders associated with the scripts that generated them (in Figures/ and Analysis/)
 
 - Prose reports or presentations --> Bogar Lab **Google Drive**
-\n
-\n
-For contributors:
+
+# For contributors:
 
 - "Shared repository model" https://docs.github.com/en/pull-requests/reference/pull-requests#shared-repository-model
   - Branches, not forks
@@ -27,12 +25,8 @@ For contributors:
 
 - Write your code in .Rmd files, with the following settings/fomrat
   - "knit on save" selected
-  - output set to "github_document", such that the header looks something like:
----
-title: "pH_analysis"
-output: github_document
----
-  - ideally, name your code chunks -- at least the ones that produce
+  - output set to "github_document". In the header, replace "output: html_document" with "output: github_document"
+  - ideally, name your code chunks -- at least the ones that produce figures
 
 - Use this Google Drive integration! 
     - Only use data files which are a) on the Google Drive (see below) or b) in this repository already
