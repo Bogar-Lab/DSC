@@ -16,8 +16,12 @@ Data tidying and analysis for the UC Davis Bogar Lab's NSF-MMORCC "Deep Soil Car
 
 # For contributors:
 
-- Create a new branch when:
-  - You're editing files in TidyData/ (these are upstream of most other things)
+- "Shared repository model" https://docs.github.com/en/pull-requests/reference/pull-requests#shared-repository-model
+  - Branches, not forks
+  - Don't work in the main branch! 
+      - Do all your work in a "topic branch" -- in most cases, start your own (?)
+  - Pull requests ... 
+  - Remember that if you're editing anything in TidyData, these files are upstream of most things in Analysis!! 
 
 - Write your code in .Rmd files, with the following settings/fomrat
   - "knit on save" selected
