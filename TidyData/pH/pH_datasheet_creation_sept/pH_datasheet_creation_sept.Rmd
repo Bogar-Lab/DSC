@@ -1,0 +1,117 @@
+---
+title: "pH_datasheet_creation_sept"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+psm_sept = read_csv("../../../TidyData/Metadata/make_per_sample_metadata_september/Results/psm_sept_tidied-20261014.csv")
+```
+
+# Pull masses of soil for pH from per-sample metadata
+```{r}
+# make a copy of the per-sample metadata which only has the Sample_IDs and masses of soil set aside for pH
+pH_tube_info = select(psm_sept, c(Sample_ID, S_pH_mass_g, pH_mass_g_soil_only)) %>%
+  
+# compute and add the following columns: 
+  mutate(
+    # the average mass of empty, labeled 15mL tubes, which I measured in June
+         avg_mass_15mL_tube_g = 7.32,  
+    # the approximate or measured mass of soil set aside for pH
+         approx_soil_mass_g = case_when(
+           # for YZ samples, we didn't tare the tubes. the soil + labeled 15mL tube mass was recorded as S_pH_mass_g, so approx soil mass is S_pH_mass_g minus the avg tube mass
+           !(is.na(S_pH_mass_g)) ~ (S_pH_mass_g - avg_mass_15mL_tube_g),
+           # for OX samples, (I think? I wasn't there) the recorded mass is soil only (tubes were tared, I assume). So no computation
+           is.na(S_pH_mass_g) ~ pH_mass_g_soil_only),
+    # the ratio of 0.01M CaCl2 mass (approximated as vol, density similar to water) to soil mass planned for the pH measurement
+         calcl2_to_soil_mass_ratio = case_when(
+           approx_soil_mass_g > 2.5 ~ 2, # 2:1 ratio
+           2.5 >= approx_soil_mass_g ~ 5 # 5:1 ratio
+           ),
+    # the volume of CaCl2 to use for pH measurement
+          vol_CaCl2 = approx_soil_mass_g * calcl2_to_soil_mass_ratio
+          )
+
+head(pH_tube_info)
+```
+
+## Just curious, what's the standard deviation of the tube masses?
+```{r}
+# from my notes in google drive file empty_vessel_masses_AG.pdf, from 10 June 2026
+
+g15mL = c(7.350, 7.307, 7.3025, 7.35209, 7.296, 7.325)
+
+mean(g15mL)
+sd(g15mL)
+
+max(g15mL) - mean(g15mL)
+mean(g15mL) - min(g15mL)
+
+biggestVar = max(g15mL) - mean(g15mL)
+```
+If all our tubes had that biggest variation, how different would our ratios be?
+```{r}
+hypothetical = pH_tube_info %>%
+  mutate(
+    avg_mass_15mL_tube_g = max(g15mL),
+    approx_soil_mass_g = case_when(
+           # recalculate these approximate masses
+           !(is.na(S_pH_mass_g)) ~ (S_pH_mass_g - avg_mass_15mL_tube_g),
+           .default = approx_soil_mass_g #no recalc for pre-tared values
+    ),
+    hypothetical_enacted_ratio = vol_CaCl2/approx_soil_mass_g,
+    ratio_off_by = hypothetical_enacted_ratio - calcl2_to_soil_mass_ratio
+  )
+
+head(hypothetical %>% select(calcl2_to_soil_mass_ratio, hypothetical_enacted_ratio, ratio_off_by))
+hypothetical$ratio_off_by
+
+```
+this seems not too bad! Like it's within the margins of pipetting error anyway
+
+check if this is within the margins of pipetting error
+```{r}
+pipetting = hypothetical %>% 
+  mutate(
+    #if the tube masses were all = the average, and we created this same ammount of error through pipetting, we would need to over- or under-pipette by what volume?
+    hypo_vol_added = hypothetical_enacted_ratio * approx_soil_mass_g,
+    #and how different is that than what what we're planning?
+    hypo_pipetting_error = (hypo_vol_added - vol_CaCl2)/1000 # put it in uL not mL
+  )
+
+pipetting$hypo_pipetting_error 
+
+```
+ok that's soooo tiny. We are definatly creating waaaay more error through pipetting than we are creating by using this average tube mass.
+our seriological pipette is only accurate to the nearest 100uL
+
+# Ok let's make the datasheet draft
+
+```{r}
+colnames(pH_tube_info)
+draft_datasheet = pH_tube_info %>%
+  # clarify column names
+  rename(mass_soil_plus_tube_g = S_pH_mass_g,
+         mass_soil_original_measurement_g = pH_mass_g_soil_only,
+         calculated_CaCl2_mL = vol_CaCl2,
+         soil_mass_g = approx_soil_mass_g) %>%
+  # add blank columns
+  mutate(pipetteable_CaCl2_mL = round(calculated_CaCl2_mL, 1),
+         pH_first_measurement = NA,
+         pH_second_measurement = NA,
+         date = NA,
+         time = NA,
+         notes = NA) %>%
+  select(Sample_ID, date, time, everything()) # put these columns first
+```
+Considering ordering this sheet by amount leftover and then Sample_ID, but currently it's set up as YZ, X, O and maybe that's good enough
+
+```{r}
+write_csv(draft_datasheet, "Results/sept_pH_blank_datasheet.csv")
+```
+
+
+
