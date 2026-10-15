@@ -1,0 +1,205 @@
+---
+title: "make_psm_sept"
+output: github_document
+---
+
+I'm using this document to wrangle the masses of the pH tubes ahead of taking pH measurements, but I'm hoping it will be a good baseline to make the september per-sample metadata (psm) later
+
+```{r}
+library(tidyverse)
+library(googledrive)
+```
+
+# Download data
+I partially transcribed the lab sample data (just enough to have pH for every non-litter sample).
+```{r}
+name_of_transcription_file_on_drive = "O_sample_data_lab_transcribed_20261014_AG" # store a copy of the file's name, exactly as it appears on Google Drive
+
+dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necessary Google Drive metadata for downloading. This stores it in a special table called a "dribble"
+
+# generate a file path and file name for the copy of the file you're about to make on your computer (in your local clone of this repository)
+local_path <- paste0("Inputs/",                               # Path starts with "Inputs/" -- you may need to manually generate an Inputs sub-folder inside the folder where this .Rmd lives
+                     name_of_transcription_file_on_drive,     # name starts identically to the name of the Google Drive version
+                     "_downloaded-",                          # name specifies when you downlaoded the file
+                     format(Sys.Date(), "%Y%m%d"),            # name includes today's date; auto-generated here
+                     ".csv")                                  # name ends in file type extension. change from .csv only if this isn't a spreadsheet for some reason
+
+# download the file from Google Drive
+drive_download(dribble,             # finds the file on Google Drive, using the metadata you saved above
+               type = "csv",        # specifies the kind of file to generate locally -- only change from csv if this isn't a spreadsheet
+               path = local_path,   # specifies the new file path you just generated above
+               overwrite = TRUE)    # maintains a maximum of one new version of this file that gets stored in the Inputs folder per day. 
+```
+
+```{r}
+name_of_transcription_file_on_drive = "X_sample_lab_data_sept_transcribed_202610_AG" # store a copy of the file's name, exactly as it appears on Google Drive
+
+dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necessary Google Drive metadata for downloading. This stores it in a special table called a "dribble"
+
+# generate a file path and file name for the copy of the file you're about to make on your computer (in your local clone of this repository)
+local_path <- paste0("Inputs/",                               # Path starts with "Inputs/" -- you may need to manually generate an Inputs sub-folder inside the folder where this .Rmd lives
+                     name_of_transcription_file_on_drive,     # name starts identically to the name of the Google Drive version
+                     "_downloaded-",                          # name specifies when you downlaoded the file
+                     format(Sys.Date(), "%Y%m%d"),            # name includes today's date; auto-generated here
+                     ".csv")                                  # name ends in file type extension. change from .csv only if this isn't a spreadsheet for some reason
+
+# download the file from Google Drive
+drive_download(dribble,             # finds the file on Google Drive, using the metadata you saved above
+               type = "csv",        # specifies the kind of file to generate locally -- only change from csv if this isn't a spreadsheet
+               path = local_path,   # specifies the new file path you just generated above
+               overwrite = TRUE)    # maintains a maximum of one new version of this file that gets stored in the Inputs folder per day. 
+```
+
+```{r}
+name_of_transcription_file_on_drive = "YZ_sample_data_sept_transcribed_202610_AG" # store a copy of the file's name, exactly as it appears on Google Drive
+
+dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necessary Google Drive metadata for downloading. This stores it in a special table called a "dribble"
+
+# generate a file path and file name for the copy of the file you're about to make on your computer (in your local clone of this repository)
+local_path <- paste0("Inputs/",                               # Path starts with "Inputs/" -- you may need to manually generate an Inputs sub-folder inside the folder where this .Rmd lives
+                     name_of_transcription_file_on_drive,     # name starts identically to the name of the Google Drive version
+                     "_downloaded-",                          # name specifies when you downlaoded the file
+                     format(Sys.Date(), "%Y%m%d"),            # name includes today's date; auto-generated here
+                     ".csv")                                  # name ends in file type extension. change from .csv only if this isn't a spreadsheet for some reason
+
+# download the file from Google Drive
+drive_download(dribble,             # finds the file on Google Drive, using the metadata you saved above
+               type = "csv",        # specifies the kind of file to generate locally -- only change from csv if this isn't a spreadsheet
+               path = local_path,   # specifies the new file path you just generated above
+               overwrite = TRUE)    # maintains a maximum of one new version of this file that gets stored in the Inputs folder per day. 
+```
+
+#Read in and preliminarily tidy data
+
+Read in all of these as csvs, and do preliminary tidying
+```{r}
+o_lab = read_csv("Inputs/O_sample_data_lab_transcribed_20261014_AG_downloaded-20261014.csv")
+
+  # set column names
+  colname_row_index = which(o_lab[[1]] == "Sample ID") # grab index of row with correct column names in it. 
+  colnameRow = unlist(o_lab[colname_row_index,]) # isolate the values that should be column names into a vector
+  colnameRow[is.na(colnameRow)] <- "unnamed_column" # handle the last column, temporarily
+  colnames(o_lab) = colnameRow # set them as column names
+  
+  # now make the column names R friendly
+o_lab = o_lab %>%
+  rename(Sample_ID = 'Sample ID',
+         RESP_SIR_mass_g = 'Resp_SIR mass (g)',
+         pH_mass_g_soil_only = 'pH mass (g)',
+         small_tin_mass_empty_g = '5\" pie tin mass (g)',
+         small_tin_mass_full_g = 'tin plus FM soil mass (g)',
+         RESP_IS_in_bag_mass_g = 'RESP_IS soil plus bag mass (g)',
+         total_mass = 'total mass') %>%
+  filter(Sample_ID != "Sample ID") # remove the row with the colnames in it
+
+head(o_lab)
+```
+
+```{r}
+x_lab = read_csv("Inputs/X_sample_lab_data_sept_transcribed_202610_AG_downloaded-20261014.csv")
+
+  # set column names
+  colname_row_index = which(x_lab[[1]] == "Sample_ID") # grab index of row with correct column names in it. 
+  print(colname_row_index) #there are three of these -- we're choosing 1
+  colnameRow = x_lab[1,] # isolate the values that should be column names into a vector
+  colnames(x_lab) = colnameRow # set them as column names
+
+x_lab = x_lab %>%
+  # remove the sheet-header rows, which were transcribed faithfully, but don't fit in the datatable
+  filter(!str_detect(Sample_ID, "Soil Processing in Lab")) %>%
+  # remove the other rows with correct column names
+  filter(!str_detect(Sample_ID, "Sample_ID")) %>%
+  
+  # also put DSC at the front of Sample_IDs where the scribe omitted
+  mutate(Sample_ID = case_when((str_detect(Sample_ID, "DSC") == FALSE) ~ 
+                                 paste0("DSC_", Sample_ID),
+                               .default = Sample_ID
+                               ))
+
+head(x_lab) #ok yay
+
+# now make the column names R friendly
+
+x_lab = x_lab %>%
+  rename(pH_mass_g_soil_only = 'pH mass (g)',
+         small_tin_mass_empty_g = '5\" pie tin mass (g)',
+         small_tin_mass_full_g = 'FM soil plus 5\" pie tin mass (g)',
+         RESP_IS_mass_g = 'final RESP tube mass (g)',
+         large_tin_mass_full_g = 'FM soil plus 9\" pie tin mass (g)')
+
+head(x_lab)
+```
+Read in the yz lab data and get the sample_id's arranged correctly
+```{r}
+# read csv into enviornment
+yz_lab = read_csv("Inputs/YZ_sample_data_sept_transcribed_202610_AG_downloaded-20261014.csv")
+
+# add "DSC_" at the beginning of Sample_IDs wherever scribes omitted it
+
+sampleIDrow_index = which(yz_lab[[1]] == "Sample_ID") # grab index of row with ids in it
+sampleIDrow = yz_lab[sampleIDrow_index,] # isolate sample_IDs into a vector
+
+for (i in 2:length(sampleIDrow)) { # iterate through that vector. skip the first value (which is "Sample_ID".) for each other value:
+  sampleIDrow[i] = as.character(sampleIDrow[i]) # make sure its datatype is character
+  if (str_detect(sampleIDrow[i], "DSC_") == FALSE) { #check if it already has "DSC" in it. If not:
+    sampleIDrow[i] = paste0("DSC_", sampleIDrow[i]) # add it to the front
+  }
+}
+
+# set the column names as these Sample_IDs
+colnames(yz_lab) = sampleIDrow
+yz_lab = yz_lab %>%
+  rename(futureColumn = Sample_ID) %>% # making the sampleID row the column names means that the column with all the other variable names in has "Sample_ID" as a column name; change this column name to "futureColumn"
+  dplyr::slice(-sampleIDrow_index) # remove the sample ID row from the dataframe, it's redundant now
+
+head(yz_lab)
+
+yz_lab = yz_lab %>%
+  
+  pivot_longer(cols = !futureColumn, 
+               names_to = "Sample_ID", 
+               values_to = "value"
+               ) %>% # pivot longer first, making a column called Sample_ID. # this was breaking because I didn't have characters in all my columns, so I put "placeholderChar" in the Scribe_initials field of the data transcription sheet for now
+  pivot_wider(names_from = futureColumn, 
+              values_from = value) # then wider, making each variable its own column
+
+head(yz_lab)
+```
+Take unit suffixes off of yz data
+```{r}
+yz_lab = yz_lab %>%
+  mutate(S_pH_mass_g = str_remove(S_pH_mass_g, "g")) # just pH for now
+```
+
+
+
+# Join data
+## just pH for now
+```{r}
+
+yz = select(yz_lab, c(Sample_ID, S_pH_mass_g))
+x = select(x_lab, c(Sample_ID, pH_mass_g_soil_only))
+o = select(o_lab, c(Sample_ID, pH_mass_g_soil_only))
+```
+
+```{r}
+psm_ph = full_join(yz, x) %>%
+  full_join(o)
+```
+
+
+```{r}
+psm = full_join(yz_lab, x_lab) %>%
+  full_join(o_lab)
+
+head(psm)
+```
+
+```{r}
+write.csv(psm, paste0("Results/psm_sept",
+                      "_tidied-",                          
+                     format(Sys.Date(), "%Y%m%d"),           
+                     ".csv")
+)
+```
+

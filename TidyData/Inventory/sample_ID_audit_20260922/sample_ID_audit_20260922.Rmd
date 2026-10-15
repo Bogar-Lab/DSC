@@ -2,7 +2,7 @@
 title: "sept_YZ_sample_ID_audit"
 author: "Anna Goodman"
 date: "2026-09-22"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -32,6 +32,11 @@ drive_download(dribble, type = "csv", path = local_path, overwrite = TRUE)
 core_transcribed_data = read_csv(local_path, col_names = TRUE)
 
 ```
+update from october anna: I've been reworking the core data transcription, so my most recent download doesn't work with this file. using the september download:
+```{r}
+core_transcribed_data = read_csv("Inputs/core_data_sept_transcribed20260922_AG_downloaded-20260925.csv", col_names = TRUE)
+```
+
 
 ```{r}
 sept_sids = select(core_transcribed_data, c(Sample_ID, Core_ID, fraction, other_notes, extra_pieces))
