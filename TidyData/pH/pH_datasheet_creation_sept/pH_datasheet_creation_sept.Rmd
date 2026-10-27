@@ -28,8 +28,8 @@ pH_tube_info = select(psm_sept, c(Sample_ID, S_pH_mass_g, pH_mass_g_soil_only)) 
            is.na(S_pH_mass_g) ~ pH_mass_g_soil_only),
     # the ratio of 0.01M CaCl2 mass (approximated as vol, density similar to water) to soil mass planned for the pH measurement
          calcl2_to_soil_mass_ratio = case_when(
-           approx_soil_mass_g > 2.5 ~ 2, # 2:1 ratio
-           2.5 >= approx_soil_mass_g ~ 5 # 5:1 ratio
+           approx_soil_mass_g >= 2 ~ 2.5, # 2:1 ratio
+           2 > approx_soil_mass_g ~ 5 # 5:1 ratio
            ),
     # the volume of CaCl2 to use for pH measurement
           vol_CaCl2 = approx_soil_mass_g * calcl2_to_soil_mass_ratio
@@ -112,6 +112,24 @@ Considering ordering this sheet by amount leftover and then Sample_ID, but curre
 ```{r}
 write_csv(draft_datasheet, "Results/sept_pH_blank_datasheet.csv")
 ```
+
+how many can I do with 100mL of solution
+```{r}
+
+x = draft_datasheet$pipetteable_CaCl2_mL[1]
+
+for (i in 1:length(draft_datasheet$pipetteable_CaCl2_mL)) {
+  if (x < 100) {
+    x = x+ draft_datasheet$pipetteable_CaCl2_mL[i]
+  } else if (x >= 100){
+    print(i-1)
+    print(draft_datasheet$Sample_ID[i-1])
+    print(x - draft_datasheet$pipetteable_CaCl2_mL[i])
+      }
+  }
+
+```
+
 
 
 
