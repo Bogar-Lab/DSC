@@ -131,5 +131,127 @@ for (i in 1:length(draft_datasheet$pipetteable_CaCl2_mL)) {
 ```
 
 
+# 27 Oct updates to pH datasheet for remaining samples
+
+## make a copy of the per-sample metadata which only has the Sample_IDs and masses of soil set aside for pH -- AND fraction, so we can treat Os differently
+```{r}
+colnames(psm_sept) # no fraction in here.
+
+# get it from core data
+draft_core_data = read_csv("../../Inventory/sample_ID_audit_20260922/Inputs/core_data_sept_transcribed20260922_AG_downloaded-20260922.csv")
+colnames(draft_core_data)
+fraction_key = draft_core_data %>% select(Sample_ID, fraction)
+
+sept_xy_psm_w_fractions = left_join(pH_tube_info, fraction_key, by = "Sample_ID", keep = FALSE)
+head(sept_xy_psm_w_fractions)
+```
+## re-make the datasheet
+### re-assign mass ratios, calculate volumes
+```{r}
+pH_tube_info2 = sept_xy_psm_w_fractions %>%
+  
+# compute and add the following columns: 
+  mutate(
+    # the average mass of empty, labeled 15mL tubes, which I measured in June
+         avg_mass_15mL_tube_g = 7.32,  
+    # the approximate or measured mass of soil set aside for pH
+         approx_soil_mass_g = case_when(
+           # for YZ samples, we didn't tare the tubes. the soil + labeled 15mL tube mass was recorded as S_pH_mass_g, so approx soil mass is S_pH_mass_g minus the avg tube mass
+           !(is.na(S_pH_mass_g)) ~ (S_pH_mass_g - avg_mass_15mL_tube_g),
+           # for OX samples, (I think? I wasn't there) the recorded mass is soil only (tubes were tared, I assume). So no computation
+           is.na(S_pH_mass_g) ~ pH_mass_g_soil_only),
+    # the ratio of 0.01M CaCl2 mass (approximated as vol, density similar to water) to soil mass planned for the pH measurement
+         calcl2_to_soil_mass_ratio = case_when(
+           approx_soil_mass_g >= 2 ~ 2, # 2:1 ratio
+           2 > approx_soil_mass_g ~ 5 # 5:1 ratio
+           ),
+        # overwrite this for samples from the O fraction; they should all get 5:1
+         calcl2_to_soil_mass_ratio = case_when(
+           fraction == "O" ~ 5, # 5:1 ratio
+           .default = calcl2_to_soil_mass_ratio
+         ),
+    # the volume of CaCl2 to use for pH measurement
+          vol_CaCl2 = approx_soil_mass_g * calcl2_to_soil_mass_ratio
+          )
+
+head(pH_tube_info2)
+```
+
+### tidy datasheet
+```{r}
+colnames(pH_tube_info2)
+draft_datasheet2 = pH_tube_info2 %>%
+  # clarify column names
+  rename(mass_soil_plus_tube_g = S_pH_mass_g,
+         mass_soil_original_measurement_g = pH_mass_g_soil_only,
+         calculated_CaCl2_mL = vol_CaCl2,
+         soil_mass_g = approx_soil_mass_g) %>%
+  # add blank columns
+  mutate(pipetteable_CaCl2_mL = round(calculated_CaCl2_mL, 1),
+         pH_first_measurement = NA,
+         time_first = NA, # this added manually to last iteration
+         pH_second_measurement = NA,
+         time_second = NA, # this added manually to last iteration
+         date = NA,
+         # time = NA, this removed/replaced manually in last iteration
+         notes = NA) %>%
+  select(Sample_ID, date, everything()) # put these columns first
+```
+
+### remove done samples 
+```{r}
+samples_measured = as.character (
+  c(
+  # 20261015
+  "352",
+  "329",
+  "335",
+  "337",
+  "259",
+  "331",
+  "341",
+  "246",
+  "359",
+  "349",
+  
+  # 20261020
+  "340",
+  "333",
+  "350",
+  "334",
+  "261",
+  "355",
+  "356",
+  "343",
+  "348",
+  "252",
+  "240",
+  "251",
+  "245",
+  "353",
+  "250",
+  "336",
+  "358",
+  
+  # 20261022
+  "338",
+  "258",
+  "254",
+  "332A",
+  "332B",
+  "256",
+  "242",
+  "249",
+  "357",
+  "255"
+)
+)
+
+addDSC = function(x) {paste0("DSC_", x)}
+sids_measured = lapply(samples_measured, addDSC)
+```
 
 
+```{r}
+write_csv(draft_datasheet2, "Results/sept_pH_blank_datasheet_v2.csv")
+```
