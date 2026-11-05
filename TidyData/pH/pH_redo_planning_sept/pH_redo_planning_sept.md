@@ -190,14 +190,14 @@ chosen_for_redo
     ## # A tibble: 8 × 6
     ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
     ##   <chr>          <dbl> <chr>      <chr>          <chr>          
-    ## 1 DSC_259     20260919 200-300_cm <NA>           <NA>           
-    ## 2 DSC_262     20260922 50-100_cm  <NA>           <NA>           
+    ## 1 DSC_349     20260920 300-400_cm <NA>           <NA>           
+    ## 2 DSC_255     20260922 100-150_cm <NA>           <NA>           
     ## 3 DSC_239     20260922 50-100_cm  <NA>           <NA>           
-    ## 4 DSC_330     20260923 100-150_cm <NA>           <NA>           
+    ## 4 DSC_244     20260922 300-400_cm <NA>           <NA>           
     ## 5 DSC_209           NA 15-30_cm   29.21          <NA>           
-    ## 6 DSC_206           NA 15-30_cm   31.75          <NA>           
-    ## 7 DSC_203           NA 30-50_cm   <NA>           <NA>           
-    ## 8 DSC_312           NA 30-50_cm   <NA>           <NA>           
+    ## 6 DSC_223           NA 15-30_cm   <NA>           <NA>           
+    ## 7 DSC_210           NA 30-50_cm   <NA>           <NA>           
+    ## 8 DSC_314           NA 15-30_cm   <NA>           <NA>           
     ## # ℹ 1 more variable: RESP_IS_in_bag_mass_g <chr>
 
 ## calculate the g extra field moist soil (derived from RESP_IS_g bc that’s where all the extra field moist soil is now)
@@ -225,14 +225,14 @@ redos_w_SFM_leftover
     ## # A tibble: 8 × 7
     ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
     ##   <chr>          <dbl> <chr>               <dbl> <chr>          
-    ## 1 DSC_259     20260919 200-300_cm           66.9 <NA>           
-    ## 2 DSC_262     20260922 50-100_cm            NA   <NA>           
+    ## 1 DSC_349     20260920 300-400_cm           NA   <NA>           
+    ## 2 DSC_255     20260922 100-150_cm           NA   <NA>           
     ## 3 DSC_239     20260922 50-100_cm            64.5 <NA>           
-    ## 4 DSC_330     20260923 100-150_cm           NA   <NA>           
+    ## 4 DSC_244     20260922 300-400_cm           NA   <NA>           
     ## 5 DSC_209           NA 15-30_cm             29.2 <NA>           
-    ## 6 DSC_206           NA 15-30_cm             NA   <NA>           
-    ## 7 DSC_203           NA 30-50_cm             NA   <NA>           
-    ## 8 DSC_312           NA 30-50_cm             NA   <NA>           
+    ## 6 DSC_223           NA 15-30_cm             NA   <NA>           
+    ## 7 DSC_210           NA 30-50_cm             33.6 <NA>           
+    ## 8 DSC_314           NA 15-30_cm             NA   <NA>           
     ## # ℹ 2 more variables: RESP_IS_in_bag_mass_g <chr>,
     ## #   SFM_g_availible_for_redo <dbl>
 
@@ -272,6 +272,10 @@ Writing this out bc if I re-run this it will pick new random numbers
 #                    ".csv"))
 ```
 
+# Should I also re-subsample pH where the two measuremnts of the first sample were dissimilar?
+
+(2026 11 04, evening)
+
 ``` r
 claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_claude_AG_edited_20261104.csv")
 ```
@@ -287,9 +291,13 @@ claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_c
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
+# this path is only on my local computer rn but the file is also on the drive in Transcribed_Data/pH/intermediate_draft_transcriptons_via_claude
+```
+
+``` r
 drift_check = claude_transcription %>%
   mutate(drift_check = pH_first_measurement - pH_second_measurement) %>%
-  filter(abs(drift_check) >= 0.15) %>%
+  filter(abs(drift_check) >= 0.15) %>% # I've talked with glade about 0.1 being not awesome and 0.2 being bad for difference between measurements
   filter(Sample_ID != "blank")
 
 drift_check
@@ -306,3 +314,153 @@ drift_check
     ## #   uncertain_fields <chr>, source_pdf <chr>, drift_check <dbl>
 
 # ok let’s also do 329 again!
+
+# wait – that claude transcription was missing some of my datasheets
+
+(2026 11 05 daytime)
+
+``` r
+claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_updated_claude_AG_edited_20261105.csv")
+```
+
+    ## Rows: 96 Columns: 17
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr   (5): Sample_ID, fraction, notes, uncertain_fields, source_pdf
+    ## dbl  (10): date, mass_soil_plus_tube_g, mass_soil_original_measurement_g, av...
+    ## time  (2): time_first, time_second
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+# this path is only on my local computer rn but the file is also on the drive in Transcribed_Data/pH/intermediate_draft_transcriptons_via_claude
+```
+
+``` r
+drift_check = claude_transcription %>%
+  mutate(drift_check = pH_first_measurement - pH_second_measurement) %>%
+  filter(abs(drift_check) >= 0.15) %>%
+  filter(Sample_ID != "blank")
+
+drift_check %>% select (c(Sample_ID, drift_check))
+```
+
+    ## # A tibble: 5 × 2
+    ##   Sample_ID drift_check
+    ##   <chr>           <dbl>
+    ## 1 DSC_329        -0.160
+    ## 2 DSC_206         0.270
+    ## 3 DSC_224         0.240
+    ## 4 DSC_318        -0.86 
+    ## 5 DSC_305        -0.230
+
+ok now there are 5 :/
+
+are do any of these overlap with re-do’s I already planned and measured
+out soil for yesterday?
+
+``` r
+weighed_1104 = read_csv("Results/pH_second_subsample_measurement_datasheet_20261104.csv")
+```
+
+    ## New names:
+    ## Rows: 8 Columns: 13
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (3): Sample_ID, fraction, vol_CaCl2 dbl (2): ...1, planned_soil_mass lgl (8):
+    ## date, measured_soil_mass, pipetteable_CaCl2_mL, pH_first_measuremen...
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+
+``` r
+drift_check$Sample_ID %in% weighed_1104$Sample_ID
+```
+
+    ## [1] FALSE FALSE FALSE FALSE FALSE
+
+``` r
+weighed_1104$Sample_ID %in% drift_check$Sample_ID
+```
+
+    ## [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+
+``` r
+# all false:(
+```
+
+ok so what if I needed to re-do all of these? would we have enough soil?
+
+## calculate the g extra field moist soil (derived from RESP_IS_g bc that’s where all the extra field moist soil is now)
+
+first we need to add RESP_IS_mass_g. I transcribed this manually last
+time, now I have this super rough, unverified claude transcription file
+that laura got for me. I’m going to have claude also pull the values
+from it for me
+
+``` r
+tentative_claude_yz_psm = read_csv("../../../TidyData/Metadata/make_per_sample_metadata_september/Results/UNREVIEWED_barely_tidied_claude_transcription_YZ_sample_data_20261105_AG.csv") 
+```
+
+    ## Rows: 54 Columns: 45
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr  (39): Sample_ID, Scribe_initials, Siever_1_initials, Siever_2_initials,...
+    ## dbl   (5): sieve_date, S_pH_mass_g, large_tin_mass_full_g_5, large_tin_mass_...
+    ## time  (1): everything_cool_time
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+resp_masses_for_drift_redos = tentative_claude_yz_psm %>%
+  filter(Sample_ID %in% drift_check$Sample_ID) %>%
+  select(c(Sample_ID, RESP_IS_mass_g))
+
+resp_masses_for_drift_redos
+```
+
+    ## # A tibble: 1 × 2
+    ##   Sample_ID RESP_IS_mass_g
+    ##   <chr>     <chr>         
+    ## 1 DSC_329   67.61
+
+why is there only one? ugggh I checked the raw file I got from Laura
+from claude and it only has data for 54 samples (out of our 80-100ish,
+can’t remember). bummer.
+
+ok which of these might be yz samples? because then I’m pretty sure we
+have enough to re-do them regardless.
+
+``` r
+drift_check_w_fraction = sept_xy_psm_w_fractions %>%
+  filter(Sample_ID %in% drift_check$Sample_ID) %>%
+  select(c(Sample_ID, sieve_date, fraction, starts_with("RESP")))
+
+drift_check_w_fraction
+```
+
+    ## # A tibble: 5 × 6
+    ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
+    ##   <chr>          <dbl> <chr>      <chr>          <chr>          
+    ## 1 DSC_329     20260919 150-200_cm 67.61g         <NA>           
+    ## 2 DSC_206           NA 15-30_cm   31.75          <NA>           
+    ## 3 DSC_224           NA 30-50_cm   <NA>           <NA>           
+    ## 4 DSC_318           NA 30-50_cm   <NA>           <NA>           
+    ## 5 DSC_305           NA 0-15_cm    <NA>           <NA>           
+    ## # ℹ 1 more variable: RESP_IS_in_bag_mass_g <chr>
+
+ahh it’s only DSC_329 – that explains why the big claude transcription
+didn’t include them, that was just yz metadata.
+
+329 is the only one I can be sure is ok to re-do, then, without digging
+manually through the ox datasheets or asking claude to do more
+transcription
+
+With it, I’ll have 8 left to do + 8 re-dos planned yesterday + DSC_329 =
+17 samples, which is a good number for a day of pH measurements.
+
+I can come back to 206, 224, 318, and 305 later if I need to. So I’m
+just going to add DSC_239 manually to the sheet I made yesterday(Nov 4),
+move that soil over, and start making measurements for these 17 tubes.

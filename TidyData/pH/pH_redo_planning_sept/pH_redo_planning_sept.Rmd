@@ -134,14 +134,16 @@ Writing this out bc if I re-run this it will pick new random numbers
 #                    ".csv"))
 ```
 
-
+# Should I also re-subsample pH where the two measuremnts of the first sample were dissimilar?
+(2026 11 04, evening)
 ```{r}
 claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_claude_AG_edited_20261104.csv")
+# this path is only on my local computer rn but the file is also on the drive in Transcribed_Data/pH/intermediate_draft_transcriptons_via_claude
 ```
 ```{r}
 drift_check = claude_transcription %>%
   mutate(drift_check = pH_first_measurement - pH_second_measurement) %>%
-  filter(abs(drift_check) >= 0.15) %>%
+  filter(abs(drift_check) >= 0.15) %>% # I've talked with glade about 0.1 being not awesome and 0.2 being bad for difference between measurements
   filter(Sample_ID != "blank")
 
 drift_check
@@ -149,11 +151,13 @@ drift_check
 
 # ok let's also do 329 again!
 
-# wait -- that claude transcription was missign data
 
+# wait -- that claude transcription was missing some of my datasheets
+(2026 11 05 daytime)
 
 ```{r}
-claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_claude_AG_edited_20261105.csv")
+claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_updated_claude_AG_edited_20261105.csv")
+# this path is only on my local computer rn but the file is also on the drive in Transcribed_Data/pH/intermediate_draft_transcriptons_via_claude
 ```
 
 ```{r}
@@ -162,13 +166,56 @@ drift_check = claude_transcription %>%
   filter(abs(drift_check) >= 0.15) %>%
   filter(Sample_ID != "blank")
 
-drift_check
+drift_check %>% select (c(Sample_ID, drift_check))
 ```
 
+ok now there are 5 :/
+
+are do any of these overlap with re-do's I already planned and measured out soil for yesterday?
+
+```{r}
+weighed_1104 = read_csv("Results/pH_second_subsample_measurement_datasheet_20261104.csv")
+```
+
+```{r}
+drift_check$Sample_ID %in% weighed_1104$Sample_ID
+
+weighed_1104$Sample_ID %in% drift_check$Sample_ID
+
+# all false:(
+```
+ok so what if I needed to re-do all of these? would we have enough soil?
 
 
+## calculate the g extra field moist soil (derived from RESP_IS_g bc that's where all the extra field moist soil is now) 
 
+first we need to add RESP_IS_mass_g. I transcribed this manually last time, now I have this super rough, unverified claude transcription file that laura got for me. I'm going to have claude also pull the values from it for me
 
+```{r}
+tentative_claude_yz_psm = read_csv("../../../TidyData/Metadata/make_per_sample_metadata_september/Results/UNREVIEWED_barely_tidied_claude_transcription_YZ_sample_data_20261105_AG.csv") 
 
+resp_masses_for_drift_redos = tentative_claude_yz_psm %>%
+  filter(Sample_ID %in% drift_check$Sample_ID) %>%
+  select(c(Sample_ID, RESP_IS_mass_g))
 
+resp_masses_for_drift_redos
+```
+why is there only one? 
+ugggh I checked the raw file I got from Laura from claude and it only has data for 54 samples (out of our 80-100ish, can't remember). bummer. 
 
+ok which of these might be yz samples? because then I'm pretty sure we have enough to re-do them regardless.
+```{r}
+drift_check_w_fraction = sept_xy_psm_w_fractions %>%
+  filter(Sample_ID %in% drift_check$Sample_ID) %>%
+  select(c(Sample_ID, sieve_date, fraction, starts_with("RESP")))
+
+drift_check_w_fraction
+```
+ahh it's only DSC_329 -- that explains why the big claude transcription didn't include them, that was just yz metadata. 
+
+329 is the only one I can be sure is ok to re-do, then, without digging manually through the ox datasheets or asking claude to do more transcription
+
+With it, I'll have 8 left to do + 8 re-dos planned yesterday + DSC_329 = 17 samples, which is a good number for a day of pH measurements. 
+
+I can come back to 206, 224, 318, and 305 later if I need to. 
+So I'm just going to add DSC_239 manually to the sheet I made yesterday(Nov 4), move that soil over, and start making measurements for these 17 tubes. 

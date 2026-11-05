@@ -204,3 +204,73 @@ write.csv(psm, paste0("Results/psm_sept",
 )
 ```
 
+# ok I need some quick info from a claude-transcribed version of the yz sample data. this version has NOT been audited/verified
+(2026 11 04)
+Read in the yz lab data and get the sample_id's arranged correctly
+
+```{r}
+name_of_transcription_file_on_drive = "YZ_sample_data_sept_transcribed_20261104_BY_CLAUDE_UNREVIEWED.csv" # store a copy of the file's name, exactly as it appears on Google Drive
+
+dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necessary Google Drive metadata for downloading. This stores it in a special table called a "dribble"
+
+# generate a file path and file name for the copy of the file you're about to make on your computer (in your local clone of this repository)
+local_path <- paste0("Inputs/",                               # Path starts with "Inputs/" -- you may need to manually generate an Inputs sub-folder inside the folder where this .Rmd lives
+                     name_of_transcription_file_on_drive,     # name starts identically to the name of the Google Drive version
+                     "_downloaded-",                          # name specifies when you downlaoded the file
+                     format(Sys.Date(), "%Y%m%d"),            # name includes today's date; auto-generated here
+                     ".csv")                                  # name ends in file type extension. change from .csv only if this isn't a spreadsheet for some reason
+
+# download the file from Google Drive
+drive_download(dribble,             # finds the file on Google Drive, using the metadata you saved above
+               type = "csv",        # specifies the kind of file to generate locally -- only change from csv if this isn't a spreadsheet
+               path = local_path,   # specifies the new file path you just generated above
+               overwrite = TRUE)    # maintains a maximum of one new version of this file that gets stored in the Inputs folder per day. 
+```
+
+```{r}
+# read csv into enviornment
+yz_lab = read_csv(local_path, col_names = FALSE)
+
+# add "DSC_" at the beginning of Sample_IDs wherever scribes omitted it
+
+sampleIDrow_index = which(yz_lab[[1]] == "Sample_ID") # grab index of row with ids in it
+sampleIDrow = yz_lab[sampleIDrow_index,] # isolate sample_IDs into a vector
+
+for (i in 2:length(sampleIDrow)) { # iterate through that vector. skip the first value (which is "Sample_ID".) for each other value:
+  sampleIDrow[i] = as.character(sampleIDrow[i]) # make sure its datatype is character
+  if (str_detect(sampleIDrow[i], "DSC_") == FALSE) { #check if it already has "DSC" in it. If not:
+    sampleIDrow[i] = paste0("DSC_", sampleIDrow[i]) # add it to the front
+  }
+}
+
+# set the column names as these Sample_IDs
+colnames(yz_lab) = sampleIDrow
+yz_lab = yz_lab %>%
+  rename(futureColumn = Sample_ID) %>% # making the sampleID row the column names means that the column with all the other variable names in has "Sample_ID" as a column name; change this column name to "futureColumn"
+  dplyr::slice(-sampleIDrow_index) # remove the sample ID row from the dataframe, it's redundant now
+
+head(yz_lab)
+
+yz_lab = yz_lab %>%
+  
+  pivot_longer(cols = !futureColumn, 
+               names_to = "Sample_ID", 
+               values_to = "value"
+               ) %>% # pivot longer first, making a column called Sample_ID. # this was breaking because I didn't have characters in all my columns, so I put "placeholderChar" in the Scribe_initials field of the data transcription sheet for now
+  pivot_wider(names_from = futureColumn, 
+              values_from = value) # then wider, making each variable its own column
+
+head(yz_lab)
+```
+Take unit suffixes off of yz data
+```{r}
+yz_lab = yz_lab %>%
+  mutate(S_pH_mass_g = str_remove(S_pH_mass_g, "g"),
+         RESP_IS_mass_g = str_remove(RESP_IS_mass_g, "g")) # just pH and resp for now
+```
+
+write out
+```{r}
+write_csv(yz_lab, "Results/UNREVIEWED_barely_tidied_claude_transcription_YZ_sample_data_20261105_AG.csv")
+```
+
