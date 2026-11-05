@@ -134,6 +134,7 @@ Writing this out bc if I re-run this it will pick new random numbers
 #                    ".csv"))
 ```
 
+---------------------------------------------------------------------------------------------
 # Should I also re-subsample pH where the two measuremnts of the first sample were dissimilar?
 (2026 11 04, evening)
 ```{r}
@@ -219,3 +220,57 @@ With it, I'll have 8 left to do + 8 re-dos planned yesterday + DSC_329 = 17 samp
 
 I can come back to 206, 224, 318, and 305 later if I need to. 
 So I'm just going to add DSC_239 manually to the sheet I made yesterday(Nov 4), move that soil over, and start making measurements for these 17 tubes. 
+
+BUT actually, I just breifly visuzalied some of these data w claude and the Xs in this list are driving a lot of variation :(
+
+```{r}
+drifters_w_SFM_leftover = drift_check %>%
+  mutate(RESP_IS_mass_g = case_when(
+    Sample_ID == "DSC_329" ~ 67.61,
+    Sample_ID == "DSC_206" ~ 31.75,
+    Sample_ID == "DSC_318" ~ 57.85,
+    Sample_ID == "DSC_305" ~ 52,
+    Sample_ID == "DSC_224" ~ 57.37)
+  ) %>%
+  mutate (SFM_g_availible_for_redo = RESP_IS_mass_g - 
+            (13 + # ~ mass of 50mL tube + labels, in g)
+            14) # minimum needed for resp: 4 for SIR and 10 for IS
+          )
+
+drifters_w_SFM_leftover %>% select(c(Sample_ID, drift_check, SFM_g_availible_for_redo))
+```
+
+```{r}
+add_to_redo_plan = drifters_w_SFM_leftover %>%
+    # I'm planning to take 2g soil when we have less than 5g extra and 4g soil when we have more than 5g extra
+  mutate(g_into_new_pH_measurement = case_when(
+    SFM_g_availible_for_redo <= 5 ~ 2,
+    SFM_g_availible_for_redo > 5 ~ 4)
+    ) %>% 
+  select(c(Sample_ID, fraction, g_into_new_pH_measurement)) %>%
+
+# prep this to become a datasheet
+  rename(planned_soil_mass_g = g_into_new_pH_measurement) %>%
+    # add blank columns 
+  mutate(measured_soil_and_tube_mass_g = NA,
+         vol_CaCl2 = "2x measured soil mass =      ",
+         pipetteable_CaCl2_mL = NA,
+         pH_first_measurement = NA,
+         time_first = NA, # this added manually to last iteration
+         pH_second_measurement = NA,
+         time_second = NA, # this added manually to last iteration
+         date = NA,
+         # time = NA, this removed/replaced manually in last iteration
+         notes = NA) %>%
+  select(Sample_ID, date, everything()) # put these columns first
+
+add_to_redo_plan
+```
+
+```{r}
+write.csv(add_to_redo_plan, paste0("Results/pH_second_subsample_measurement_datasheet_additions",
+                   format(Sys.Date(), "%Y%m%d"),           
+                   ".csv"))
+```
+
+ok, I'm thinking I should try these tomorrow (nov 6) if I have time. I think If I add all of these, which are highly likely to drift around a bunch and take forever to measure today, I might not be able to finish

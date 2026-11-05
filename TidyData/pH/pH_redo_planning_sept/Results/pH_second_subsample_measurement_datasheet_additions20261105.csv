@@ -1,0 +1,6 @@
+"","Sample_ID","date","fraction","planned_soil_mass_g","measured_soil_and_tube_mass_g","vol_CaCl2","pipetteable_CaCl2_mL","pH_first_measurement","time_first","pH_second_measurement","time_second","notes"
+"1","DSC_329",NA,NA,4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
+"2","DSC_206",NA,"15-30 cm",2,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
+"3","DSC_224",NA,"30-50 cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
+"4","DSC_318",NA,"30-50 cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
+"5","DSC_305",NA,"0-15 cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
