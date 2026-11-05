@@ -96,13 +96,14 @@ head(o_lab)
 ```
 
 ```{r}
-x_lab = read_csv("Inputs/X_sample_lab_data_sept_transcribed_202610_AG_downloaded-20261014.csv")
+x_lab = read_csv("Inputs/X_sample_lab_data_sept_transcribed_202610_AG_downloaded-20261014.csv", col_names = FALSE)
 
   # set column names
   colname_row_index = which(x_lab[[1]] == "Sample_ID") # grab index of row with correct column names in it. 
-  print(colname_row_index) #there are three of these -- we're choosing 1
-  colnameRow = x_lab[1,] # isolate the values that should be column names into a vector
+  print(colname_row_index) #there are three of these -- we're choosing row 2
+  colnameRow = x_lab[2,] # isolate the values that should be column names into a vector
   colnames(x_lab) = colnameRow # set them as column names
+  
 
 x_lab = x_lab %>%
   # remove the sheet-header rows, which were transcribed faithfully, but don't fit in the datatable
@@ -132,7 +133,7 @@ head(x_lab)
 Read in the yz lab data and get the sample_id's arranged correctly
 ```{r}
 # read csv into enviornment
-yz_lab = read_csv("Inputs/YZ_sample_data_sept_transcribed_202610_AG_downloaded-20261014.csv")
+yz_lab = read_csv("Inputs/YZ_sample_data_sept_transcribed_202610_AG_downloaded-20261014.csv", col_names = FALSE)
 
 # add "DSC_" at the beginning of Sample_IDs wherever scribes omitted it
 

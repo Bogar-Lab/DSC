@@ -1,0 +1,141 @@
+---
+title: "pH_redo_planning_sept"
+output: github_document
+---
+
+Ok so the plan is to repeat the following pH measurements on new subsamples:
+
+- DSC_239
+  - because the 15mL falcon cracked in the centrifuge (I still measured the reoverable supernatant, but it had touched the inside of the swinging bucket which could have had salt residues/chemical contaminants on it)
+- DSC_209 
+
+  - because I a) attempted to transfer all soil from the 50mL pH subsampling tube weighed during processing to new 15mL tube, potentially biasing the particle size (leaving behind finer particles but taking all coarse), and b) left it out on the bench at RT for several hours before adding CaCl2/measuring.
+  
+- AND ~ 5 others, randomly selected amongst samples which have plenty of extra field-moist still. All remaining FM soil is in RESP_IS tubes.
+    - maybe 3 yzs and 3 xs?
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+psm_sept = read_csv("../../../TidyData/Metadata/make_per_sample_metadata_september/Results/psm_sept_tidied-20261104.csv")
+```
+
+## make a copy of the per-sample metadata which only has the Sample_IDs and masses of soil set aside for pH -- AND fraction, so we can treat Os differently
+```{r}
+colnames(psm_sept) # no fraction in here.
+
+# get it from core data
+draft_core_data = read_csv("../../Inventory/sample_ID_audit_20260922/Inputs/core_data_sept_transcribed20260922_AG_downloaded-20260922.csv")
+colnames(draft_core_data)
+fraction_key = draft_core_data %>% select(Sample_ID, fraction)
+
+sept_xy_psm_w_fractions = left_join(psm_sept, fraction_key, by = "Sample_ID", keep = FALSE)
+head(sept_xy_psm_w_fractions)
+```
+
+## disqualify 
+  - the two samples we're already re-doing,
+  - O samples
+  - anything that has not enough RESP_IS leftover? -- ok I haven't transcribed all the RESP_IS masses this time, but probably they all have enough
+```{r}
+psm_sans_dqs = sept_xy_psm_w_fractions %>%
+  filter(fraction != "O") %>%
+  filter(Sample_ID != "DSC_239") %>%
+  filter(Sample_ID != "DSC_209")
+
+possible_redos_x = psm_sans_dqs %>%
+  filter(startsWith(fraction, "0-") | startsWith(fraction, "15-") | startsWith(fraction, "30-"))
+
+
+possible_redos_yz = psm_sans_dqs %>%
+  filter(! (Sample_ID %in% possible_redos_x$Sample_ID))
+
+possible_redos_x = possible_redos_x$Sample_ID
+
+possible_redos_yz = possible_redos_yz$Sample_ID
+```
+
+# randomly select 3 xs and 3 yzs to redo
+```{r}
+
+random_list_indicies_x = sample(1:length(possible_redos_x) , 3) # choose random indicies in the list of possible redo sids
+
+chosen_sids_x = possible_redos_x[random_list_indicies_x] # make a list of the sample IDs at these indicies
+
+
+random_list_indicies_yz = sample(1:length(possible_redos_yz), 3)  # choose random indicies in the list of possible redo sids
+
+chosen_sids = append(chosen_sids_x, possible_redos_yz[random_list_indicies_yz]) # add these sampe ids to the list
+```
+
+## look at their metadata 
+```{r}
+chosen_for_redo = sept_xy_psm_w_fractions %>%
+  filter(Sample_ID %in% chosen_sids | Sample_ID == "DSC_239" | Sample_ID == "DSC_209") %>%
+  select(c(Sample_ID, sieve_date, fraction, starts_with("RESP")))
+
+chosen_for_redo
+```
+## calculate the g extra field moist soil (derived from RESP_IS_g bc that's where all the extra field moist soil is now) 
+```{r}
+redos_w_SFM_leftover = chosen_for_redo %>%
+  mutate(RESP_IS_mass_g = case_when(
+    Sample_ID == "DSC_259" ~ 66.87,
+    Sample_ID == "DSC_340" ~ 57.37,
+    Sample_ID == "DSC_239" ~ 64.52,
+    Sample_ID == "DSC_248" ~ 72.71,
+    Sample_ID == "DSC_209" ~ 29.21,
+    Sample_ID == "DSC_308" ~ 32.93,
+    Sample_ID == "DSC_210" ~ 33.58,
+    Sample_ID == "DSC_220" ~ 32.89)
+  ) %>%
+  mutate (SFM_g_availible_for_redo = RESP_IS_mass_g - 
+            (13 + # ~ mass of 50mL tube + labels, in g)
+            14) # minimum needed for resp: 4 for SIR and 10 for IS
+          )
+
+redos_w_SFM_leftover
+```
+Looks like we should take ~1g from DSC_209 ... It would need to be closer to 2 to get a measuremnt with the 2:1 ratio. Can we do do a clean 2?
+
+```{r}
+redo_plan = redos_w_SFM_leftover %>%
+    # I'm planning to take 2g soil when we have less than 5g extra and 4g soil when we have more than 5g extra
+  mutate(g_into_new_pH_measurement = case_when(
+    SFM_g_availible_for_redo <= 5 ~ 2,
+    SFM_g_availible_for_redo > 5 ~ 4)
+    ) %>% 
+  select(c(Sample_ID, fraction, g_into_new_pH_measurement)) %>%
+
+# prep this to become a datasheet
+  rename(planned_soil_mass_g = g_into_new_pH_measurement) %>%
+    # add blank columns 
+  mutate(measured_soil_mass_g = NA,
+         vol_CaCl2 = "2x measured soil mass =      ",
+         pipetteable_CaCl2_mL = NA,
+         pH_first_measurement = NA,
+         time_first = NA, # this added manually to last iteration
+         pH_second_measurement = NA,
+         time_second = NA, # this added manually to last iteration
+         date = NA,
+         # time = NA, this removed/replaced manually in last iteration
+         notes = NA) %>%
+  select(Sample_ID, date, everything()) # put these columns first
+```
+
+
+Writing this out bc if I re-run this it will pick new random numbers
+```{r}
+#write.csv(redo_plan, paste0("Results/pH_second_subsample_measurement_datasheet_",
+#                    format(Sys.Date(), "%Y%m%d"),           
+#                    ".csv"))
+```
+
+
+
+
+
+
