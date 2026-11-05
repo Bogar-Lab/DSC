@@ -135,6 +135,39 @@ Writing this out bc if I re-run this it will pick new random numbers
 ```
 
 
+```{r}
+claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_claude_AG_edited_20261104.csv")
+```
+```{r}
+drift_check = claude_transcription %>%
+  mutate(drift_check = pH_first_measurement - pH_second_measurement) %>%
+  filter(abs(drift_check) >= 0.15) %>%
+  filter(Sample_ID != "blank")
+
+drift_check
+```
+
+# ok let's also do 329 again!
+
+# wait -- that claude transcription was missign data
+
+
+```{r}
+claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_claude_AG_edited_20261105.csv")
+```
+
+```{r}
+drift_check = claude_transcription %>%
+  mutate(drift_check = pH_first_measurement - pH_second_measurement) %>%
+  filter(abs(drift_check) >= 0.15) %>%
+  filter(Sample_ID != "blank")
+
+drift_check
+```
+
+
+
+
 
 
 

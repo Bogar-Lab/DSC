@@ -190,14 +190,14 @@ chosen_for_redo
     ## # A tibble: 8 × 6
     ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
     ##   <chr>          <dbl> <chr>      <chr>          <chr>          
-    ## 1 DSC_331     20260919 50-100_cm  <NA>           <NA>           
-    ## 2 DSC_359     20260920 100-150_cm <NA>           <NA>           
+    ## 1 DSC_259     20260919 200-300_cm <NA>           <NA>           
+    ## 2 DSC_262     20260922 50-100_cm  <NA>           <NA>           
     ## 3 DSC_239     20260922 50-100_cm  <NA>           <NA>           
-    ## 4 DSC_248     20260923 50-100_cm  <NA>           <NA>           
+    ## 4 DSC_330     20260923 100-150_cm <NA>           <NA>           
     ## 5 DSC_209           NA 15-30_cm   29.21          <NA>           
-    ## 6 DSC_318           NA 30-50_cm   <NA>           <NA>           
-    ## 7 DSC_305           NA 0-15_cm    <NA>           <NA>           
-    ## 8 DSC_202           NA 15-30_cm   <NA>           <NA>           
+    ## 6 DSC_206           NA 15-30_cm   31.75          <NA>           
+    ## 7 DSC_203           NA 30-50_cm   <NA>           <NA>           
+    ## 8 DSC_312           NA 30-50_cm   <NA>           <NA>           
     ## # ℹ 1 more variable: RESP_IS_in_bag_mass_g <chr>
 
 ## calculate the g extra field moist soil (derived from RESP_IS_g bc that’s where all the extra field moist soil is now)
@@ -225,14 +225,14 @@ redos_w_SFM_leftover
     ## # A tibble: 8 × 7
     ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
     ##   <chr>          <dbl> <chr>               <dbl> <chr>          
-    ## 1 DSC_331     20260919 50-100_cm            NA   <NA>           
-    ## 2 DSC_359     20260920 100-150_cm           NA   <NA>           
+    ## 1 DSC_259     20260919 200-300_cm           66.9 <NA>           
+    ## 2 DSC_262     20260922 50-100_cm            NA   <NA>           
     ## 3 DSC_239     20260922 50-100_cm            64.5 <NA>           
-    ## 4 DSC_248     20260923 50-100_cm            72.7 <NA>           
+    ## 4 DSC_330     20260923 100-150_cm           NA   <NA>           
     ## 5 DSC_209           NA 15-30_cm             29.2 <NA>           
-    ## 6 DSC_318           NA 30-50_cm             NA   <NA>           
-    ## 7 DSC_305           NA 0-15_cm              NA   <NA>           
-    ## 8 DSC_202           NA 15-30_cm             NA   <NA>           
+    ## 6 DSC_206           NA 15-30_cm             NA   <NA>           
+    ## 7 DSC_203           NA 30-50_cm             NA   <NA>           
+    ## 8 DSC_312           NA 30-50_cm             NA   <NA>           
     ## # ℹ 2 more variables: RESP_IS_in_bag_mass_g <chr>,
     ## #   SFM_g_availible_for_redo <dbl>
 
@@ -271,3 +271,38 @@ Writing this out bc if I re-run this it will pick new random numbers
 #                    format(Sys.Date(), "%Y%m%d"),           
 #                    ".csv"))
 ```
+
+``` r
+claude_transcription = read_csv("../../../../DSC/Data/pH/soil_pH_transcription_claude_AG_edited_20261104.csv")
+```
+
+    ## Rows: 81 Columns: 17
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr   (5): Sample_ID, fraction, notes, uncertain_fields, source_pdf
+    ## dbl  (10): date, mass_soil_plus_tube_g, mass_soil_original_measurement_g, av...
+    ## time  (2): time_first, time_second
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+drift_check = claude_transcription %>%
+  mutate(drift_check = pH_first_measurement - pH_second_measurement) %>%
+  filter(abs(drift_check) >= 0.15) %>%
+  filter(Sample_ID != "blank")
+
+drift_check
+```
+
+    ## # A tibble: 1 × 18
+    ##   Sample_ID     date mass_soil_plus_tube_g mass_soil_original_measurement_g
+    ##   <chr>        <dbl>                 <dbl>                            <dbl>
+    ## 1 DSC_329   20261015                  11.2                               NA
+    ## # ℹ 14 more variables: avg_mass_15mL_tube_g <dbl>, soil_mass_g <dbl>,
+    ## #   calcl2_to_soil_mass_ratio <dbl>, calculated_CaCl2_mL <dbl>, fraction <chr>,
+    ## #   pipetteable_CaCl2_mL <dbl>, pH_first_measurement <dbl>, time_first <time>,
+    ## #   pH_second_measurement <dbl>, time_second <time>, notes <chr>,
+    ## #   uncertain_fields <chr>, source_pdf <chr>, drift_check <dbl>
+
+# ok let’s also do 329 again!
