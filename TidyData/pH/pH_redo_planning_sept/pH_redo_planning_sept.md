@@ -190,14 +190,14 @@ chosen_for_redo
     ## # A tibble: 8 × 6
     ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
     ##   <chr>          <dbl> <chr>      <chr>          <chr>          
-    ## 1 DSC_349     20260920 300-400_cm <NA>           <NA>           
-    ## 2 DSC_255     20260922 100-150_cm <NA>           <NA>           
+    ## 1 DSC_337     20260919 50-100_cm  54.87g         <NA>           
+    ## 2 DSC_334     20260920 200-300_cm <NA>           <NA>           
     ## 3 DSC_239     20260922 50-100_cm  <NA>           <NA>           
-    ## 4 DSC_244     20260922 300-400_cm <NA>           <NA>           
+    ## 4 DSC_330     20260923 100-150_cm <NA>           <NA>           
     ## 5 DSC_209           NA 15-30_cm   29.21          <NA>           
-    ## 6 DSC_223           NA 15-30_cm   <NA>           <NA>           
-    ## 7 DSC_210           NA 30-50_cm   <NA>           <NA>           
-    ## 8 DSC_314           NA 15-30_cm   <NA>           <NA>           
+    ## 6 DSC_218           NA 0-15_cm    <NA>           <NA>           
+    ## 7 DSC_308           NA 0-15_cm    <NA>           <NA>           
+    ## 8 DSC_307           NA 30-50_cm   <NA>           <NA>           
     ## # ℹ 1 more variable: RESP_IS_in_bag_mass_g <chr>
 
 ## calculate the g extra field moist soil (derived from RESP_IS_g bc that’s where all the extra field moist soil is now)
@@ -225,14 +225,14 @@ redos_w_SFM_leftover
     ## # A tibble: 8 × 7
     ##   Sample_ID sieve_date fraction   RESP_IS_mass_g RESP_SIR_mass_g
     ##   <chr>          <dbl> <chr>               <dbl> <chr>          
-    ## 1 DSC_349     20260920 300-400_cm           NA   <NA>           
-    ## 2 DSC_255     20260922 100-150_cm           NA   <NA>           
+    ## 1 DSC_337     20260919 50-100_cm            NA   <NA>           
+    ## 2 DSC_334     20260920 200-300_cm           NA   <NA>           
     ## 3 DSC_239     20260922 50-100_cm            64.5 <NA>           
-    ## 4 DSC_244     20260922 300-400_cm           NA   <NA>           
+    ## 4 DSC_330     20260923 100-150_cm           NA   <NA>           
     ## 5 DSC_209           NA 15-30_cm             29.2 <NA>           
-    ## 6 DSC_223           NA 15-30_cm             NA   <NA>           
-    ## 7 DSC_210           NA 30-50_cm             33.6 <NA>           
-    ## 8 DSC_314           NA 15-30_cm             NA   <NA>           
+    ## 6 DSC_218           NA 0-15_cm              NA   <NA>           
+    ## 7 DSC_308           NA 0-15_cm              32.9 <NA>           
+    ## 8 DSC_307           NA 30-50_cm             NA   <NA>           
     ## # ℹ 2 more variables: RESP_IS_in_bag_mass_g <chr>,
     ## #   SFM_g_availible_for_redo <dbl>
 
@@ -271,6 +271,8 @@ Writing this out bc if I re-run this it will pick new random numbers
 #                    format(Sys.Date(), "%Y%m%d"),           
 #                    ".csv"))
 ```
+
+------------------------------------------------------------------------
 
 # Should I also re-subsample pH where the two measuremnts of the first sample were dissimilar?
 
@@ -365,18 +367,29 @@ weighed_1104 = read_csv("Results/pH_second_subsample_measurement_datasheet_20261
 ```
 
     ## New names:
-    ## Rows: 8 Columns: 13
+    ## Rows: 9 Columns: 12
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (3): Sample_ID, fraction, vol_CaCl2 dbl (2): ...1, planned_soil_mass lgl (8):
-    ## date, measured_soil_mass, pipetteable_CaCl2_mL, pH_first_measuremen...
+    ## (12): DSC: pH measurements of second-per-sample pH subsamples, Nov 2026,...
     ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
     ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
+    ## • `` -> `...2`
+    ## • `` -> `...3`
+    ## • `` -> `...4`
+    ## • `` -> `...5`
+    ## • `` -> `...6`
+    ## • `` -> `...7`
+    ## • `` -> `...8`
+    ## • `` -> `...9`
+    ## • `` -> `...10`
+    ## • `` -> `...11`
+    ## • `` -> `...12`
 
 ``` r
 drift_check$Sample_ID %in% weighed_1104$Sample_ID
 ```
+
+    ## Warning: Unknown or uninitialised column: `Sample_ID`.
 
     ## [1] FALSE FALSE FALSE FALSE FALSE
 
@@ -384,7 +397,9 @@ drift_check$Sample_ID %in% weighed_1104$Sample_ID
 weighed_1104$Sample_ID %in% drift_check$Sample_ID
 ```
 
-    ## [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+    ## Warning: Unknown or uninitialised column: `Sample_ID`.
+
+    ## logical(0)
 
 ``` r
 # all false:(
@@ -464,3 +479,163 @@ With it, I’ll have 8 left to do + 8 re-dos planned yesterday + DSC_329 =
 I can come back to 206, 224, 318, and 305 later if I need to. So I’m
 just going to add DSC_239 manually to the sheet I made yesterday(Nov 4),
 move that soil over, and start making measurements for these 17 tubes.
+
+BUT actually, I just breifly visuzalied some of these data w claude and
+the Xs in this list are driving a lot of variation :(
+
+``` r
+drifters_w_SFM_leftover = drift_check %>%
+  mutate(RESP_IS_mass_g = case_when(
+    Sample_ID == "DSC_329" ~ 67.61,
+    Sample_ID == "DSC_206" ~ 31.75,
+    Sample_ID == "DSC_318" ~ 57.85,
+    Sample_ID == "DSC_305" ~ 52,
+    Sample_ID == "DSC_224" ~ 57.37)
+  ) %>%
+  mutate (SFM_g_availible_for_redo = RESP_IS_mass_g - 
+            (13 + # ~ mass of 50mL tube + labels, in g)
+            14) # minimum needed for resp: 4 for SIR and 10 for IS
+          )
+
+drifters_w_SFM_leftover %>% select(c(Sample_ID, drift_check, SFM_g_availible_for_redo))
+```
+
+    ## # A tibble: 5 × 3
+    ##   Sample_ID drift_check SFM_g_availible_for_redo
+    ##   <chr>           <dbl>                    <dbl>
+    ## 1 DSC_329        -0.160                    40.6 
+    ## 2 DSC_206         0.270                     4.75
+    ## 3 DSC_224         0.240                    30.4 
+    ## 4 DSC_318        -0.86                     30.8 
+    ## 5 DSC_305        -0.230                    25
+
+``` r
+add_to_redo_plan = drifters_w_SFM_leftover %>%
+    # I'm planning to take 2g soil when we have less than 5g extra and 4g soil when we have more than 5g extra
+  mutate(g_into_new_pH_measurement = case_when(
+    SFM_g_availible_for_redo <= 5 ~ 2,
+    SFM_g_availible_for_redo > 5 ~ 4)
+    ) %>% 
+  select(c(Sample_ID, fraction, g_into_new_pH_measurement)) %>%
+
+# prep this to become a datasheet
+  rename(planned_soil_mass_g = g_into_new_pH_measurement) %>%
+    # add blank columns 
+  mutate(measured_soil_and_tube_mass_g = NA,
+         vol_CaCl2 = "2x measured soil mass =      ",
+         pipetteable_CaCl2_mL = NA,
+         pH_first_measurement = NA,
+         time_first = NA, # this added manually to last iteration
+         pH_second_measurement = NA,
+         time_second = NA, # this added manually to last iteration
+         date = NA,
+         # time = NA, this removed/replaced manually in last iteration
+         notes = NA) %>%
+  select(Sample_ID, date, everything()) # put these columns first
+
+add_to_redo_plan
+```
+
+    ## # A tibble: 5 × 12
+    ##   Sample_ID date  fraction planned_soil_mass_g measured_soil_and_tub…¹ vol_CaCl2
+    ##   <chr>     <lgl> <chr>                  <dbl> <lgl>                   <chr>    
+    ## 1 DSC_329   NA    <NA>                       4 NA                      "2x meas…
+    ## 2 DSC_206   NA    15-30 cm                   2 NA                      "2x meas…
+    ## 3 DSC_224   NA    30-50 cm                   4 NA                      "2x meas…
+    ## 4 DSC_318   NA    30-50 cm                   4 NA                      "2x meas…
+    ## 5 DSC_305   NA    0-15 cm                    4 NA                      "2x meas…
+    ## # ℹ abbreviated name: ¹​measured_soil_and_tube_mass_g
+    ## # ℹ 6 more variables: pipetteable_CaCl2_mL <lgl>, pH_first_measurement <lgl>,
+    ## #   time_first <lgl>, pH_second_measurement <lgl>, time_second <lgl>,
+    ## #   notes <lgl>
+
+``` r
+write.csv(add_to_redo_plan, paste0("Results/pH_second_subsample_measurement_datasheet_additions",
+                   format(Sys.Date(), "%Y%m%d"),           
+                   ".csv"))
+```
+
+ok, I’m thinking I should try these tomorrow (nov 6) if I have time. I
+think If I add all of these, which are highly likely to drift around a
+bunch and take forever to measure today, I might not be able to finish
+
+# 17 Nov
+
+Ok on 5 nov I did do the 5 add-to-redo samples, but used the incorrect
+concentration of CaCl2. I need to re-do them now.
+
+``` r
+# removed soil mass
+leftovers = drifters_w_SFM_leftover %>% 
+  select(c(Sample_ID, drift_check, SFM_g_availible_for_redo)) %>%
+  mutate(sfm_used_nov5_g = case_when(
+    Sample_ID == "DSC_224" ~ 4.42,
+    Sample_ID == "DSC_206" ~ 2.12,
+    Sample_ID == "DSC_329" ~ 4.09,
+    Sample_ID == "DSC_318" ~ 3.17,
+    Sample_ID == "DSC_305" ~ (10 - 7.19) # 2.75 used for the measurement, but I discarded some when I switched 318 and 305 from 2:1 to 5:1
+  )) %>%
+  mutate(sfm_avail_after_nov5_g = SFM_g_availible_for_redo - sfm_used_nov5_g)
+
+
+leftovers
+```
+
+    ## # A tibble: 5 × 5
+    ##   Sample_ID drift_check SFM_g_availible_for_redo sfm_used_nov5_g
+    ##   <chr>           <dbl>                    <dbl>           <dbl>
+    ## 1 DSC_329        -0.160                    40.6             4.09
+    ## 2 DSC_206         0.270                     4.75            2.12
+    ## 3 DSC_224         0.240                    30.4             4.42
+    ## 4 DSC_318        -0.86                     30.8             3.17
+    ## 5 DSC_305        -0.230                    25               2.81
+    ## # ℹ 1 more variable: sfm_avail_after_nov5_g <dbl>
+
+``` r
+re_do_17nov = drifters_w_SFM_leftover %>%
+    # I'm planning to take 2g soil when we have less than 5g extra and 4g soil when we have more than 5g extra
+  mutate(g_into_new_pH_measurement = case_when(
+    SFM_g_availible_for_redo <= 5 ~ 1,
+    SFM_g_availible_for_redo > 5 ~ 4)
+    ) %>% 
+  select(c(Sample_ID, fraction, g_into_new_pH_measurement)) %>%
+
+# prep this to become a datasheet
+  rename(planned_soil_mass_g = g_into_new_pH_measurement) %>%
+    # add blank columns 
+  mutate(measured_emptytube_mass_g = NA,
+         measured_soil_plus_tube_mass_g = NA,
+         soil_mass_g = NA,
+         weighing_notes = NA,
+         vol_CaCl2 = "2x measured soil mass =      ",
+         pipetteable_CaCl2_mL = NA,
+         pH_first_measurement = NA,
+         time_first = NA, # this added manually to last iteration
+         pH_second_measurement = NA,
+         time_second = NA, # this added manually to last iteration
+         date = NA,
+         # time = NA, this removed/replaced manually in last iteration
+         notes = NA) %>%
+  select(Sample_ID, date, everything()) # put these columns first
+
+re_do_17nov
+```
+
+    ## # A tibble: 5 × 15
+    ##   Sample_ID date  fraction planned_soil_mass_g measured_emptytube_mass_g
+    ##   <chr>     <lgl> <chr>                  <dbl> <lgl>                    
+    ## 1 DSC_329   NA    <NA>                       4 NA                       
+    ## 2 DSC_206   NA    15-30 cm                   1 NA                       
+    ## 3 DSC_224   NA    30-50 cm                   4 NA                       
+    ## 4 DSC_318   NA    30-50 cm                   4 NA                       
+    ## 5 DSC_305   NA    0-15 cm                    4 NA                       
+    ## # ℹ 10 more variables: measured_soil_plus_tube_mass_g <lgl>, soil_mass_g <lgl>,
+    ## #   weighing_notes <lgl>, vol_CaCl2 <chr>, pipetteable_CaCl2_mL <lgl>,
+    ## #   pH_first_measurement <lgl>, time_first <lgl>, pH_second_measurement <lgl>,
+    ## #   time_second <lgl>, notes <lgl>
+
+``` r
+write.csv(re_do_17nov, paste0("Results/pH_second_subsample_measurement_datasheet_additions",
+                   format(Sys.Date(), "%Y%m%d"),           
+                   ".csv"))
+```

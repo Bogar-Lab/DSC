@@ -1,9 +1,10 @@
-"","Sample_ID","date","fraction","planned_soil_mass","measured_soil_mass","vol_CaCl2","pipetteable_CaCl2_mL","pH_first_measurement","time_first","pH_second_measurement","time_second","notes"
-"1","DSC_259",NA,"200-300_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"2","DSC_340",NA,"200-300_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"3","DSC_239",NA,"50-100_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"4","DSC_248",NA,"50-100_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"5","DSC_209",NA,"15-30_cm",2,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"6","DSC_308",NA,"0-15_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"7","DSC_210",NA,"30-50_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
-"8","DSC_220",NA,"30-50_cm",4,NA,"2x measured soil mass =      ",NA,NA,NA,NA,NA,NA
+"DSC: pH measurements of second-per-sample pH subsamples, Nov 2026, AG",,,,,,,,,,,
+Sample_ID,date,fraction,planned_soil_mass_g,measured_soil_mass_g,vol_CaCl2,pipetteable_CaCl2_mL,pH_first_measurement,time_first,pH_second_measurement,time_second,notes
+DSC_259,,200-300_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample for QC
+DSC_340,,200-300_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample for QC
+DSC_239,,50-100_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample to replace first subsample data (see AG notebook)
+DSC_248,,50-100_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample for QC
+DSC_209,,15-30_cm,2,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample to replace first subsample data (see AG notebook)
+DSC_308,,0-15_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample for QC
+DSC_210,,30-50_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample for QC
+DSC_220,,30-50_cm,4,,2x measured soil mass =      ,,,,,,measuring 2nd pH subsample for QC
