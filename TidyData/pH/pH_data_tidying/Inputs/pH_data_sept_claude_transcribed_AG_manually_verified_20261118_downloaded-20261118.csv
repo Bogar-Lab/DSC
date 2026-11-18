@@ -1,0 +1,119 @@
+Sample_ID,date,subsample,mass_soil_plus_tube_g,mass_soil_original_measurement_g,avg_mass_15mL_tube_g,soil_mass_g,planned_soil_mass_g,calcl2_to_soil_mass_ratio,calculated_CaCl2_mL,fraction,pipetteable_CaCl2_mL,pH_first_measurement,time_first,pH_second_measurement,time_second,notes_claude_transcription_not_verified_unless_marked,notes_transcription_verified_AG,weighing_notes_claude_transcription_not_verified,source_pdf
+DSC_352,20261015,1,12.22,NA,7.32,4.9,NA,2,9.8,NA,9.8,5.18,16:17,5.12,16:50,,,,pH_data_AG_20261022.pdf
+DSC_329,20261015,1,11.24,NA,7.32,3.92,NA,2,7.84,NA,7.8,5.22,16:19,5.38,16:55,"Read ""ready"" @ 5.12 w/out stirring; once I started stirring began to climb; didn't stop until I slowed my stir. Had floating solids. Stabilized @ 5.38 ('ready'), stayed at 5.38 as I stirred more intensely again, then moved to 5.40 @ rest.",y,,pH_data_AG_20261022.pdf
+DSC_335,20261015,1,11.83,NA,7.32,4.51,NA,2,9.02,NA,9,5.04,16:23,5.04,17:02,"stirred for a long time, dropping(?) it [partly illegible]",,,pH_data_AG_20261022.pdf
+DSC_337,20261015,1,11.34,NA,7.32,4.02,NA,2,8.04,NA,8,5.08,16:26,5.05,17:05,,,,pH_data_AG_20261022.pdf
+DSC_259,20261015,1,11.52,NA,7.32,4.2,NA,2,8.4,NA,8.4,5.15,16:28,5.14,17:07,,,,pH_data_AG_20261022.pdf
+DSC_331,20261015,1,10.35,NA,7.32,3.03,NA,2,6.06,NA,6.1,5.14,16:30,5.13,17:09,,,,pH_data_AG_20261022.pdf
+DSC_341,20261015,1,11.26,NA,7.32,3.94,NA,2,7.88,NA,7.9,5,16:35,5,17:12,,,,pH_data_AG_20261022.pdf
+DSC_246,20261015,1,11.5,NA,7.32,4.18,NA,2,8.36,NA,8.4,4.97,16:38,4.99,17:14,,,,pH_data_AG_20261022.pdf
+DSC_359,20261015,1,12,NA,7.32,4.68,NA,2,9.36,NA,9.4,5.18,16:42,5.11,17:17,,,,pH_data_AG_20261022.pdf
+DSC_349,20261015,1,11,NA,7.32,3.68,NA,2,7.36,NA,7.4,5.04,16:44,5.06,17:19,,,,pH_data_AG_20261022.pdf
+blank,20261015,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,5.15,16:15,5.07,16:48,,,,pH_data_AG_20261022.pdf
+DSC_340,20261020,1,10.94,NA,7.32,3.62,NA,2,7.24,NA,7.2,5.24,NA,5.2,19:12,22.7°C [illegible],,,pH_data_AG_20261022.pdf
+DSC_333,20261020,1,10.64,NA,7.32,3.32,NA,2,6.64,NA,6.6,5.21,NA,5.18,19:15,22.6°C # for 3rd measurement,,,pH_data_AG_20261022.pdf
+DSC_350,20261020,1,11.33,NA,7.32,4.01,NA,2,8.02,NA,8,4.95,18:23,4.84,19:22,22.6°C; thermometer ends @ 22 even,,,pH_data_AG_20261022.pdf
+DSC_334,20261020,1,12.31,NA,7.32,4.99,NA,2,9.98,NA,10,4.99,18:24,4.95,19:27,22.4°C; 4.97 22.5; 5.00 22.5,,,pH_data_AG_20261022.pdf
+DSC_261,20261020,1,12.68,NA,7.32,5.36,NA,2,10.72,NA,10.7,5.02,18:27,5.04,19:35,22.6°C; thermometer ends 22.0°C,,,pH_data_AG_20261022.pdf
+DSC_355,20261020,1,10.71,NA,7.32,3.39,NA,2,6.78,NA,6.8,4.96,18:29,4.89,19:39,22.6°C,,,pH_data_AG_20261022.pdf
+DSC_356,20261020,1,11.53,NA,7.32,4.21,NA,2,8.42,NA,8.4,4.85,18:32,4.79,19:55,22.6°C,,,pH_data_AG_20261022.pdf
+DSC_343,20261020,1,11.29,NA,7.32,3.97,NA,2,7.94,NA,7.9,4.79,18:34,4.7,19:59,22.5°C,,,pH_data_AG_20261022.pdf
+DSC_348,20261020,1,11.26,NA,7.32,3.94,NA,2,7.88,NA,7.9,4.86,18:36,4.86,20:03,22.5°C,,,pH_data_AG_20261022.pdf
+DSC_252,20261020,1,11.86,NA,7.32,4.54,NA,2,9.08,NA,9.1,4.94,18:38,5.12,20:08,,,,pH_data_AG_20261022.pdf
+DSC_240,20261020,1,10,NA,7.32,2.68,NA,2,5.36,NA,5.4,4.92,18:41,4.95,20:11,22.4°C,,,pH_data_AG_20261022.pdf
+DSC_251,20261020,1,10.16,NA,7.32,2.84,NA,2,5.68,NA,5.7,4.94,18:43,4.91,20:14,22.3°C,,,pH_data_AG_20261022.pdf
+DSC_245,20261020,1,11.44,NA,7.32,4.12,NA,2,8.24,NA,8.2,4.92,18:45,4.93,20:17,,,,pH_data_AG_20261022.pdf
+DSC_353,20261020,1,11.71,NA,7.32,4.39,NA,2,8.78,NA,8.8,4.93,18:47,4.95,20:18,,,,pH_data_AG_20261022.pdf
+DSC_250,20261020,1,10.8,NA,7.32,3.48,NA,2,6.96,NA,7,4.97,18:49,4.99,20:28,,,,pH_data_AG_20261022.pdf
+DSC_336,20261020,1,11.78,NA,7.32,4.46,NA,2,8.92,NA,8.9,4.97,18:51,5,20:26,,,,pH_data_AG_20261022.pdf
+DSC_358,20261020,1,11.48,NA,7.32,4.16,NA,2,8.32,NA,8.3,4.97,18:53,5,20:30,22.3°C,,,pH_data_AG_20261022.pdf
+blank,20261020,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,5.19,NA,4.97,18:56,Additional blank readings written below table: 5.15 @ 19:10; 5.07 @ 20:23; 5.09 @ 20:34 (22.5°C). Also '5.11' crossed out; text like 'w/ thermometer' and 'after correct' near 18:06. Pipette volume label illegible ('Rml'),,,pH_data_AG_20261022.pdf
+DSC_338,20261022,1,11.73,NA,7.32,4.41,NA,2,8.82,NA,8.8,5.09,15:00,5.03,15:57,1st: 22.5°C; 2nd: 23.1°C,,,pH_data_AG_20261022.pdf
+DSC_258,20261022,1,13.12,NA,7.32,5.8,NA,2,11.6,NA,11.6,5.2,15:05,5.24,16:02,"2nd: 5.24, 16:02. First 'ready' of 2nd reading was @ 5.20",,,pH_data_AG_20261022.pdf
+blank,20261022,1,NA,NA,NA,NA,NA,NA,NA,NA,12,5.12,15:03,5.06,15:54,2nd measurement: 'ready' climbed from 5.00,,,pH_data_AG_20261022.pdf
+DSC_254,20261022,1,12.46,NA,7.32,5.14,NA,2,10.28,NA,10.3,4.78,15:10,4.76,16:07,,,,pH_data_AG_20261022.pdf
+DSC_332A,20261022,1,10.6,NA,7.32,3.28,NA,2,6.56,NA,6.6,5.14,15:16,5.06,16:11,"1st reading climbed from 1st 'ready' 5.00, 22.5°C; 2nd reading climbed from 1st ready, 23°C [partly illegible]",,,pH_data_AG_20261022.pdf
+DSC_332B,20261022,1,10.53,NA,7.32,3.21,NA,2,6.42,NA,6.4,5.6,15:26,5.52,16:17,"reading climbed from 1st 'ready' @ 5.43, 23°C [partly illegible]",,,pH_data_AG_20261022.pdf
+DSC_256,20261022,1,11.65,NA,7.32,4.33,NA,2,8.66,NA,8.7,5.14,15:34,5.13,16:22,dropped for a long time,,,pH_data_AG_20261022.pdf
+DSC_242,20261022,1,11,NA,7.32,3.68,NA,2,7.36,NA,7.4,5.01,15:38,4.99,16:26,,,,pH_data_AG_20261022.pdf
+DSC_249,20261022,1,11.51,NA,7.32,4.19,NA,2,8.38,NA,8.4,5.16,15:42,5.13,16:30,,,,pH_data_AG_20261022.pdf
+DSC_357,20261022,1,11.2,NA,7.32,3.88,NA,2,7.76,NA,7.8,5.1,15:45,5.09,16:33,,,,pH_data_AG_20261022.pdf
+DSC_255,20261022,1,11.88,NA,7.32,4.56,NA,2,9.12,NA,9.1,4.91,15:50,4.91,16:36,,,,pH_data_AG_20261022.pdf
+blank,20261027,1,NA,NA,NA,NA,NA,NA,NA,NA,12,5.18,14:02,5.15,15:18,"3rd measurement, after finishing all 2nd measurements: 5.16, 16:14",,,pH_data_AG_20261027.pdf
+DSC_339,20261027,1,11.64,NA,7.32,4.3,NA,2,8.64,50-100 cm,8.6,4.7,14:27,4.85,15:22,"removed from fridge 22 Oct; did not add CaCl2, returned to fridge",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_260B,20261027,1,11.68,NA,7.32,4.4,NA,2,8.72,NA,8.7,4.83,14:31,4.83,15:25,"LOTS of light solids; likely organics. @ least 1 fine needle, some small bits of wood.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_351,20261027,1,11.19,NA,7.32,3.9,NA,2,7.74,150-200 cm,7.7,4.84,14:33,4.85,15:27,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_241,20261027,1,11.75,NA,7.32,4.4,NA,2,8.86,150-200 cm,8.9,4.88,14:35,4.86,15:29,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_262,20261027,1,11.64,NA,7.32,4.3,NA,2,8.64,50-100 cm,8.6,4.96,14:38,4.93,15:31,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_243,20261027,1,11.54,NA,7.32,4.2,NA,2,8.44,50-100 cm,8.4,4.86,14:41,4.87,15:34,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_239,20261027,1,12.83,NA,7.32,5.5,NA,2,11.02,50-100 cm,11,5.03,14:44,5.01,15:38,"15mL tube CRACKED in centrifuge. 20261027 measurement is of supernatant salvaged from cracked tube & centrifuge bucket, re-centrifuged in new tube.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_342,20261027,1,11.22,NA,7.32,3.9,NA,2,7.8,100-150 cm,7.8,4.96,14:46,4.96,15:40,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_238,20261027,1,11.91,NA,7.32,4.6,NA,2,9.18,100-150 cm,9.2,5.1,14:50,5.08,15:43,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_244,20261027,1,11.77,NA,7.32,4.4,NA,2,8.9,300-400 cm,8.9,5.13,14:52,5.18,15:47,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_260A,20261027,1,12.12,NA,7.32,4.8,NA,2,9.6,NA,9.6,5.17,14:54,5.19,15:49,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_247,20261027,1,11.63,NA,7.32,4.3,NA,2,8.62,100-150 cm,8.6,4.84,14:58,4.83,15:53,"During 2nd measurement, I noticed the tube I was measuring was labeled 243 not 247 [rest illegible]; margin note: 'my sheets were out of order; disregard'. Page footnote: a few tubes in this rack row (6), and maybe the row before, had light (organic?) particulate left in the supernatant; forgot to note which before discarding.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_248,20261027,1,11,NA,7.32,3.7,NA,2,7.36,50-100 cm,7.4,4.87,15:00,4.85,15:55,"Page footnote: a few tubes in this rack row (6), and maybe the row before, had light (organic?) particulate left in the supernatant; forgot to note which before discarding.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_330,20261027,1,11.71,NA,7.32,4.4,NA,2,8.78,100-150 cm,8.8,5.1,15:04,5.08,15:59,"Page footnote: a few tubes in this rack row (6), and maybe the row before, had light (organic?) particulate left in the supernatant; forgot to note which before discarding.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_257,20261027,1,12.04,NA,7.32,4.7,NA,2,9.44,400-500 cm,9.4,5.31,15:09,5.3,16:04,"Page footnote: a few tubes in this rack row (6), and maybe the row before, had light (organic?) particulate left in the supernatant; forgot to note which before discarding.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_253,20261027,1,12.32,NA,7.32,5,NA,2,10,100-150 cm,10,5.07,15:13,5.05,16:08,"[scribbled-out note, illegible] Page footnote: a few tubes in this rack row (6), and maybe the row before, had light (organic?) particulate left in the supernatant; forgot to note which before discarding.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_328,20261027,1,11,NA,7.32,3.7,NA,2,7.36,200-300 cm,7.4,5.15,15:16,5.17,16:11,"Page footnote: a few tubes in this rack row (6), and maybe the row before, had light (organic?) particulate left in the supernatant; forgot to note which before discarding.",,,pH_data_AG_20261022.pdf;pH_data_AG_20261027.pdf
+DSC_209,20261028,1,NA,4,7.32,4,NA,2,8,15-30 cm,8,5.09,13:33,4.96,16:10,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261028.pdf
+DSC_215,20261028,1,NA,3.9,7.32,3.9,NA,2,7.8,30-50 cm,7.8,5.13,13:36,5.02,16:13,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261028.pdf
+DSC_206,20261028,1,NA,4,7.32,4,NA,2,8,15-30 cm,8,4.93,13:39,4.66,16:28,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261028.pdf
+DSC_214,20261028,1,NA,4,7.32,4,NA,2,8,15-30 cm,8,5.1,13:43,4.99,16:32,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261028.pdf
+DSC_203,20261028,1,NA,4.18,7.32,4.2,NA,2,8.36,30-50 cm,8.4,5,13:46,4.9,16:35,,,,pH_data_AG_20261022.pdf;pH_data_AG_20261028.pdf
+DSC_218,20261028,1,NA,4.32,7.32,4.3,NA,2,8.64,0-15 cm,8.6,5,13:49,4.93,16:37,changed out DI water either before or after this 1st measurement - lots done before. Had probe rinsed w/ DI that sat overnight [partly illegible],,,pH_data_AG_20261028.pdf
+blank,20261028,1,NA,NA,NA,NA,NA,NA,NA,NA,12,5.16,13:30,5.1,16:07,,,,pH_data_AG_20261028.pdf
+DSC_223,20261028,1,NA,4.04,7.32,4,NA,2,8.08,15-30 cm,8.1,4.91,13:52,4.85,16:40,,,,pH_data_AG_20261028.pdf
+DSC_301,20261028,1,NA,4.08,7.32,4.1,NA,2,8.16,30-50 cm,8.2,4.95,13:54,4.88,16:42,,,,pH_data_AG_20261028.pdf
+DSC_315,20261028,1,NA,4,7.32,4,NA,2,8,30-50 cm,8,4.96,13:57,4.88,16:44,,,,pH_data_AG_20261028.pdf
+DSC_311,20261028,1,NA,4.05,7.32,4.1,NA,2,8.1,15-30 cm,8.1,5.05,14:00,5.03,16:47,,,,pH_data_AG_20261028.pdf
+DSC_308,20261028,1,NA,4.08,7.32,4.1,NA,2,8.16,0-15 cm,8.2,6.99,14:20,6.89,17:38,"very dark color; see notes for DSC-318 [?]. 1st measurement: pH up while I stirred, steadily for ~10 min; 'ready' when I stopped stirring @ 6.7?, 14:12?; up again when I resumed stirring; measure -> 'ready' @ 6.79, 14:18; ... ultimate 'ready' @ 6.99 [partly illegible]. Margin: pH increasing; deciding to measure & move on @ 14:19; many particles/OM in liquid; L symbol blinking even when 'ready', but this also true for many others measured. 2nd measurement: 1st ready 6.83 @ 17:34; 6.87 @ 17:36 (after measuring [illegible]); to 6.89 while I wrote this w/out stirring; then to 6.88 while I stirred; 6.89 w/ stirring again [partly illegible]",,,pH_data_AG_20261028.pdf
+DSC_224,20261028,1,NA,4.2,7.32,4.2,NA,2,8.4,30-50 cm,8.4,5.31,14:37,5.07,16:52,"1st measurement: slow lowering of pH w/ 'ready' on while mV changing; L flashing. Recording as mV changing more slowly; 5.28; then I started stirring, 5.30 after ...; 5.29 then I paused to stir; 5.31 when done writing [heavily illegible]. 2nd measurement: slow climb from ~5. Measured after DSC-311, not DSC-308",,,pH_data_AG_20261028.pdf
+DSC_205,20261028,1,NA,4.05,7.32,4.1,NA,2,8.1,30-50 cm,8.1,4.8,14:46,4.71,16:57,1st measurement: mV changing even while 'ready'; many false 'ready's. Stopped when change was bidirectional (initially pH down). [margin note partly illegible: 'Stopping @ 5.5?...'],,,pH_data_AG_20261028.pdf
+DSC_318,20261028,1,NA,4,7.32,4,NA,2,8,30-50 cm,8,5.89,15:01,6.75,17:48,"very dark color; darker than I remember @ SOAP. 1st measurement: pH rising slowly from <5; 1st 'ready' @ 5.7-something, ~14:55; ""ready"" @ 5.77, 5.78 @ 14:5?; 5.79; 5.83 @ 14:58; mV dropping, pH rising steadily w/ or w/out stirring, more quickly w/ stirring? Stopping @ 5.80 to move on. 2nd measurement: pH up to 6.9ish, then slowly dropping in the 6.8s w/ frequent 'ready's; readys often held for 10+ sec & then 'stabilizing' when I go to write",y,,pH_data_AG_20261028.pdf
+DSC_210,20261028,1,NA,4.1,7.32,4.1,NA,2,8.2,30-50 cm,8.2,4.97,15:16,4.83,16:59,1st measurement: 1st 'ready' 5.13 @ 15:09; 2nd 'ready' 5.06; 3rd 4.95 @ 15:13. 'stabilizing' label returned ~6 sec after pressing 'measure' after 2nd ready [partly illegible]; pH drifted to 4.97 while I wrote this. [margin note illegible: 'returned to 4.95?'],,,pH_data_AG_20261028.pdf
+DSC_304,20261028,1,NA,4.05,7.32,4.1,NA,2,8.1,30-50 cm,8.1,4.87,15:20,4.79,17:02,1st measurement: mV increasing slowly but not changing pH much. 4.87 -> 4.86 w/ ~18 sec stirring; now 4.87 again as I write this.,y,,pH_data_AG_20261028.pdf
+DSC_207,20261028,1,NA,4.05,7.32,4.1,NA,2,8.1,0-15 cm,8.1,4.88,15:24,4.84,17:04,1st measurement: steadiest reading a while. d[symbol] still blinking.,y,,pH_data_AG_20261028.pdf
+DSC_305,20261028,1,NA,4.04,7.32,4,NA,2,8.08,0-15 cm,8.1,5.4,15:36,5.63,18:02,"dark color similar to DSC-318. 1st measurement: 1st 'ready' @ 5.27 @ 15:30; 2nd: 5.33 @ 15:31; mV dropping w/out stir, [illegilbe], then stayed until I pressed 'measure' again; 5.36 @ 15:33; several ~10 sec returns to 'stabilizing' btwn 5.36 & 5.40; 'ready' @ 15:35; next ready 5.39 -> 5.40 w/out stirring @ 15:36 [heavily illegible; order unclear]. Below table: DSC-305 dropped for a long time. Margin note illegible.",y,,pH_data_AG_20261028.pdf
+DSC_201,20261028,1,NA,4,7.32,4,NA,2,8,0-15 cm,8,4.78,15:43,4.73,17:07,"Read 4.77 while stirring, 4.78 while still. First 'ready' 4.80 @ 15:42",,,pH_data_AG_20261029.pdf
+DSC_216,20261028,1,NA,4,7.32,4,NA,2,8,0-15 cm,8,5.29,15:50,5.24,17:12,"1st meas: mV still drifting, pH †‘ but only ~0.01 every 10-15 sec of stirring. Now stable @ 5.29; 5.30-5.29 while still, eventually [partly illegible]",,,pH_data_AG_20261029.pdf
+DSC_312,20261028,1,NA,4,7.32,4,NA,2,8,30-50 cm,8,5.07,15:58,5.07,17:15,DSC_216 measurements initially recorded in wrong box,,,pH_data_AG_20261029.pdf
+DSC_211,20261028,1,NA,4.04,7.32,4,NA,2,8.08,0-15 cm,8.1,5.01,16:01,4.99,17:18,,,,pH_data_AG_20261029.pdf
+DSC_222,20261028,1,NA,4.03,7.32,4,NA,2,8.06,0-15 cm,8.1,5.09,16:04,5.07,17:21,1st measurement: slow creep up from 5.05,,,pH_data_AG_20261029.pdf
+DSC_302,20261029,1,NA,4,7.32,4,NA,2,8,0-15 cm,8,5.3,12:15,5.2,13:55,,,,pH_data_AG_20261029.pdf
+blank,20261029,1,NA,NA,NA,NA,NA,NA,NA,NA,12,5.35,12:11,5.14,13:52,Written below the table with arrows linking to the DSC_302 row; 302 cells contain crossed-out values,,,pH_data_AG_20261029.pdf
+DSC_220,20261029,1,NA,4.01,7.32,4,NA,2,8.02,30-50 cm,8,5.08,12:20,5.06,13:58,,,,pH_data_AG_20261029.pdf
+DSC_307,20261029,1,NA,4.08,7.32,4.1,NA,2,8.16,30-50 cm,8.2,5.31,12:27,5.24,14:03,slow creep up during 1st measurement; 2nd measurement oscillating 5.23 <-> 5.26,,,pH_data_AG_20261029.pdf
+DSC_313,20261029,1,NA,4.09,7.32,4.1,NA,2,8.18,0-15 cm,8.2,5.2,12:32,5.2,14:09,,,,pH_data_AG_20261029.pdf
+DSC_317,20261029,1,NA,4.04,7.32,4,NA,2,8.08,15-30 cm,8.1,5.3,12:37,5.26,14:12,,,,pH_data_AG_20261029.pdf
+DSC_306,20261029,1,NA,3.97,7.32,4,NA,2,7.94,15-30 cm,7.9,5.27,12:40,5.24,14:14,,,,pH_data_AG_20261029.pdf
+DSC_202,20261029,1,NA,4,7.32,4,NA,2,8,15-30 cm,8,5.15,12:48,5.11,14:18,[scribbled out; illegible],,,pH_data_AG_20261029.pdf
+DSC_303,20261029,1,NA,4.04,7.32,4,NA,2,8.08,15-30 cm,8.1,5.13,12:48,5.11,14:20,,,,pH_data_AG_20261029.pdf
+DSC_300,20261029,1,NA,4.09,7.32,4.1,NA,2,8.18,0-15 cm,8.2,5.25,12:52,5.25,14:24,,,,pH_data_AG_20261029.pdf
+DSC_310,20261029,1,NA,3.95,7.32,4,NA,2,7.9,15-30 cm,7.9,5.15,12:55,5.08,14:28,,,,pH_data_AG_20261029.pdf
+DSC_314,20261029,1,NA,4.05,7.32,4.1,NA,2,8.1,15-30 cm,8.1,5.04,12:59,5.04,14:31,,,,pH_data_AG_20261029.pdf
+DSC_219,20261105,1,NA,4.06,7.32,4.1,NA,2,8.12,15-30 cm,8.1,5.04,19:19,5.01,21:06,"Earlier scribbled-out 10/29 entries remain in the first-measurement cells (illegible, possibly 5.05); 11/05 values written above them",,,pH_data_AG_20261029.pdf;pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_316,20261105,1,NA,4.05,7.32,4.1,NA,2,8.1,0-15 cm,8.1,5.28,19:22,5.24,21:08,,,,pH_data_AG_20261029.pdf;pH_datasheets_AG_20261105_primary_sheets_only.pdf
+blank,20261105,1,NA,NA,NA,NA,NA,NA,NA,NA,12,5.29,19:15,5.23,21:02,50mL tube on shaker; pH_first 5.32 struck out and replaced by 5.29,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_208,20261105,1,NA,2.06,7.32,2.1,NA,5,10.3,O,10.3,4.63,19:26,4.62,21:13,"pH_first: 5.27 struck out, 4.63 written below; time_first: struck-out entry replaced by 19:26",,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_200,20261105,1,NA,2.15,7.32,2.2,NA,5,10.8,O,10.8,4.52,19:28,4.49,21:16,,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_221,20261105,1,NA,2,7.32,2,NA,5,10,O,10,4.77,19:31,4.75,21:19,Date cell overwritten,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_213,20261105,1,NA,2,7.32,2,NA,5,10,O,10,4.18,19:33,4.16,21:21,,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_204,20261105,1,NA,0.99,7.32,1,NA,5,4.95,O,5,4.65,19:36,4.64,21:24,,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_217,20261105,1,NA,1,7.32,1,NA,5,5,O,5,4.85,19:39,4.84,21:28,,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_259,20261105,2,11.31,NA,7.22,4.09,4,2,8.18,200-300 cm,8.2,5.36,18:10,5.46,19:56,"measuring 2nd pH subsample for QC. Measured new soil into 15mL tube w/out [weighing?]; spilled small amounts, no concern [partly illegible]",,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_340,20261105,2,10.74,NA,7.22,3.52,4,2,7.04,200-300 cm,7,5.34,18:13,5.38,19:58,measuring 2nd pH subsample for QC,,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_239,20261105,2,11,NA,7.22,3.78,4,2,7.56,50-100 cm,7.6,5.1,18:17,5.05,20:02,measuring 2nd pH subsample to replace first subsample data (see AG notebook),,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_248,20261105,2,11.41,NA,7.22,4.19,4,2,8.38,50-100 cm,8.4,4.9,18:20,4.85,20:05,measuring 2nd pH subsample for QC; drop of CaCl2 (of the 8.5 mL measured) escaped while pipetting,,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_209,20261105,2,9.12,NA,7.2,1.92,2,2,3.84,15-30 cm,3.8,4.93,18:23,4.86,20:07,measuring 2nd pH subsample to replace first subsample data (see AG notebook); empty tube: 7.20g w/ soil: 9.12g,,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_308,20261105,2,11.13,NA,7.22,3.91,4,2,7.82,0-15 cm,7.8,6.87,18:39,7.04,20:23,"measuring 2nd pH subsample for QC; empty tube: 7.22 w/ soil: 11.13 (11.14 struck out). 1st measurement: long, slow increase while stirring; let sit while I wrote down, 'ready' @ 6.4; pressed measure again, continued increasing w/ stirring; set down -> 6.57; margin: did not stop increasing while stirring when I pressed 'measure' again; set down -> 6.76; 'measure' again -> 6.84, the first 'ready' while stirring; -> 6.87 while writing [partly illegible]. Note at top of sheet: 3rd measurement of DSC-308: 6.97 @ 21:48. DSC-308 2nd measurement: I pipetted ~5 mL of supernatant to fresh 50mL tube, avoiding some of the sediment; measured in here (w/ no labels); pH increased slowly while stirring, steadily to 6.99?, where 'ready' occurred; relatively fast iteration to 10sec-stable 'ready' @ 7.04 [partly illegible]",,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_210,20261105,2,11.29,NA,7.24,4.05,4,2,8.1,30-50 cm,8.1,5.21,18:50,5.31,20:37,measuring 2nd pH subsample for QC; empty tube: 7.24g w/ soil: 11.30g (soil+tube also written as 11.27 and 11.29); slow drop,,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+DSC_220,20261105,2,11,NA,7.22,3.78,4,2,7.56,30-50 cm,7.6,5.17,18:53,5.13,20:40,measuring 2nd pH subsample for QC; empty tube: 7.22g w/ soil: 11.00g,,soil weighed 20261104,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+blank,20261105,2,NA,NA,NA,NA,NA,NA,NA,NA,12,5.16,16:07,5.46,19:54,15mL tube on shaker,,,pH_datasheets_AG_20261105_primary_sheets_only.pdf
+blank,20261117,3,NA,NA,NA,0,0,NA,12,NA,12,5.12,15:53,5.44,16:35,"Took a 3rd reading: 5.21 @ 17:24, 22.5°C [margin note partly illegible: '...stabilizing']",,,pH_datasheet_AG_20261117.pdf
+DSC_329,20261117,3,11.92,NA,7.19,4.73,4,2,9.46,NA,9.5,5.6,16:00,5.63,16:41,"1st measurement: mV continued decreasing (pH up) very slowly after 'ready'; for >10 sec only minor (0.0x) changes in pH; 5.61 -> 5.60 while I wrote this, no stirring. 2nd measurement: 5.60 -> 5.62 [partly illegible]; 5.62 -> 5.63. Margin note partly illegible: '...ready' period; ... at rest, w/ no 'stabilizing'",,,pH_datasheet_AG_20261117.pdf
+DSC_206,20261117,3,8.38,NA,7.23,1.15,1,5,5.75,15-30 cm,5.8,5,16:07,5,16:48,,,,pH_datasheet_AG_20261117.pdf
+DSC_224,20261117,3,8.75,NA,7.21,1.54,1,5,7.7,30-50 cm,7.7,5.01,16:11,4.99,16:51,"1st reading quick, stable -- exceptionally. Took a 3rd reading, just to confirm: 5.04, measured @ 17:19, 22.5°C",,"Measured out ~1g, but REST is tube [?] less massive than DSC-206, so poured soil [back?] [partly illegible]",pH_datasheet_AG_20261117.pdf
+DSC_318,20261117,3,8.92,NA,7.17,1.75,1,5,8.75,30-50 cm,8.8,5.84,16:26,5.84,17:07,"1st reading: from 5.75 -> 5.76-7, 5.77 after I stopped stirring; back to 5.76 w/ stirring again; 'ready' held ~10 sec w/ no 'stabilizing'; recording 5.83 [partly illegible]. Margin (DSC-318 notes cont.): 2nd measurement: 1st 'ready' @ 5.76. Same pattern: stable while stirring, increasing a bit (5.77-5.79) after. Again, 1st 'ready' that doesn't return to 'stabilizing' after 10 sec of stir AND 10 sec of rest is 5.83; 5.84 (change w/ no 'stabilizing') [partly illegible]",,"Looks so dark/organic, decided to do 5:1",pH_datasheet_AG_20261117.pdf
+DSC_305,20261117,3,8.51,NA,7.23,1.28,1,5,6.4,0-15 cm,6.4,5.54,16:31,5.5,17:13,2nd measurement: waited 10 sec stirring AND 10 sec rest to confirm no return to 'stabilizing' (confirm w/ 318 phenomenon): not occurring [partly illegible],,,pH_datasheet_AG_20261117.pdf

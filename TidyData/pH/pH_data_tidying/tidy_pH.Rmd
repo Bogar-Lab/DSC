@@ -26,18 +26,19 @@ drive_download(dribble, type = "csv", path = local_path, overwrite = TRUE)
 
 transcribed_data = read.csv(local_path)
 
+pH_measures_june = transcribed_data
 ```
 Remove rows which do not contain measurements
 ```{r}
-pH_measures = transcribed_data %>%
+pH_measures_june = transcribed_data %>%
   filter(endsWith(Date.Measured, "2026"))
 ```
 
 Clean up column names/contents
 ```{r}
-colnames(pH_measures)
+colnames(pH_measures_june)
 
-pH_cols_tidy = pH_measures %>%
+pH_cols_tidy_june = pH_measures_june %>%
   rename(approx_soil_mass_g = Approximate.soil.mass..g., # most of these for legibility
          CaCl2_mL = Actual.0.01.CaCl2.added..mL.,
          pH_1st_measurement = pH...first,
@@ -48,21 +49,209 @@ pH_cols_tidy = pH_measures %>%
             average.15.mL.tube.mass..g.,
             Approximate.0.01M.CaCl2.to.add..mL.)) # these both just for measurement set-up, not relevant downstream
 
-colnames(pH_cols_tidy)
+colnames(pH_cols_tidy_june)
 
 ```
-put the letters in 16A and 16B in caps
+
+little things
 ```{r}
-pH_tidy = pH_cols_tidy %>%
+pH_tidy_june = pH_cols_tidy_june %>%
+  #put the letters in 16A and 16B in caps
   mutate(Sample_ID = case_when(
     Sample_ID == "DSC_016a" ~ "DSC_016A",
     Sample_ID == "DSC_016b" ~ "DSC_016B",
     .default = Sample_ID
-  ))
+  )) %>%
+  rename(date = Date.Measured)
+
+pH_tidy_june
+```
+
+# September data
+```{r}
+name_of_transcription_file_on_drive = "pH_data_sept_claude_transcribed_AG_manually_verified_20261118" # copy the file's name exactly as it appears on google drive
+
+dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necesary data for downloading
+
+local_path <- paste0("Inputs/", 
+                     name_of_transcription_file_on_drive, 
+                     "_downloaded-", 
+                     format(Sys.Date(), "%Y%m%d"), 
+                     ".csv") #define what this local file name will be, with today's date
+
+drive_download(dribble, type = "csv", path = local_path, overwrite = TRUE)
+
+transcribed_data = read.csv(local_path)
+
+pH_measures_sept = transcribed_data
+```
+
+Written with Claude:
+
+```{r tidy}
+# ---- 1. Per-row calculations (one row = one subsample's pair of measurements) --
+pH_calc <- pH_measures_sept |>
+  mutate(
+    # make sure the pH columns are numeric
+    across(c(pH_first_measurement, pH_second_measurement), as.numeric),
+    # second minus first: positive = pH drifted UP between the two measurements
+    pH_diff     = pH_second_measurement - pH_first_measurement,
+    # round before any threshold comparison (floating point: 4.85 - 4.70 is
+    # stored as 0.14999999..., which would fail `>= 0.15`)
+    abs_pH_diff = round(abs(pH_diff), 2)
+  )
+
+# CaCl2 blanks are not samples (the same "blank" ID repeats on several dates),
+# so they are kept in their own table instead of being collapsed
+pH_blanks <- pH_calc |> filter(Sample_ID == "blank")
+
+
+# ---- 2. Drop subsamples that were replaced -----------------------------------------
+pH_sets <- pH_calc |>
+  filter(Sample_ID != "blank") |>
+  # chronological order within each sample (each Sample_ID is its own sample,
+  # including 260A/260B and 332A/332B)
+  arrange(Sample_ID, date) |>
+  group_by(Sample_ID) |>
+  mutate(
+    # a replacement set: any set from 11/17, or a set whose note says it replaces
+    # the first subsample data (coalesce() turns NA from missing notes into FALSE)
+    is_replacement = date == 20261117 |
+      coalesce(
+        str_detect(
+          notes_claude_transcription_not_verified_unless_marked,
+          "to replace first subsample"
+        ),
+        FALSE
+      ),
+    # a set is "replaced" when the NEXT set of the same sample is a replacement
+    replaced = lead(is_replacement, default = FALSE),
+    # order among the sets that remain once replaced sets are removed
+    set_n = cumsum(!replaced) * !replaced
+  ) |>
+  ungroup() |>
+  filter(!replaced) |>              # remove replaced sets, keep replacements
+  select(-is_replacement, -replaced)
+
+# at most two sets per sample should remain; stop with an error if not
+stopifnot(max(pH_sets$set_n) <= 2)
+
+
+# ---- 3. One row per sample ------------------------------------------------------------
+# First remaining subsample keeps the ORIGINAL column names
+first_sets <- pH_sets |>
+  filter(set_n == 1) |>
+  select(-set_n)
+
+# Second remaining subsample (only samples with a QC re-subsample): every
+# column gets the suffix "_subsample2", Sample_ID is left alone for joining
+second_sets <- pH_sets |>
+  filter(set_n == 2) |>
+  select(-set_n) |>
+  rename_with(\(x) str_c(x, "_subsample2"), .cols = -Sample_ID)
+
+# pH_mean: average of ALL individual measurements (first and second) from every
+# subsample that remains for the sample, pooled together
+sample_means <- pH_sets |>
+  group_by(Sample_ID) |>
+  summarise(
+    pH_mean = mean(c(pH_first_measurement, pH_second_measurement), na.rm = TRUE),
+    .groups = "drop"
+  )
+
+pH_tidy_sept <- first_sets |>
+  left_join(second_sets, by = "Sample_ID") |>
+  left_join(sample_means, by = "Sample_ID") |>
+  relocate(pH_mean, .after = abs_pH_diff)
+
+# sanity check: exactly one row per sample
+stopifnot(!anyDuplicated(pH_tidy_sept$Sample_ID))
 ```
 
 
-export
+export complete september pH data
+```{r}
+
+local_path_tidydata <- paste0("Results/", 
+                     "pH_sept_tidied-", 
+                     format(Sys.Date(), "%Y%m%d"), 
+                     ".csv") #define what this local file name will be, with today's date
+
+write_csv(pH_tidy_sept, local_path_tidydata)
+```
+
+# Trim and prepare each for join
+
+## June
+```{r}
+pH_june_trimmed = pH_tidy_june %>%
+  rename(pH_first_measurement = pH_1st_measurement, pH_second_measurement = pH_2nd_measurement) %>%
+  mutate(
+    # make sure the pH columns are numeric
+    across(c(pH_first_measurement, pH_second_measurement), as.numeric),
+    # second minus first: positive = pH drifted UP between the two measurements
+    pH_diff     = pH_second_measurement - pH_first_measurement,
+    # round before any threshold comparison (floating point: 4.85 - 4.70 is
+    # stored as 0.14999999..., which would fail `>= 0.15`)
+    abs_pH_diff = round(abs(pH_diff), 2),
+    pH_mean = (pH_first_measurement + pH_second_measurement)/2
+  ) %>%
+  mutate(newdate = strptime(as.character(date), "%m/%d/%Y")) %>%
+  mutate(date = format(newdate, "%Y%m%d")) %>%
+  select(c(Sample_ID, date, pH_first_measurement, pH_second_measurement, pH_mean, abs_pH_diff)) %>%
+  
+  # organize blanks
+  mutate(
+    Sample_ID = case_when(
+      str_detect(Sample_ID, "blank") ~ paste0(Sample_ID, "_", date),
+      .default = Sample_ID
+      ),
+    Sample_ID = str_remove(Sample_ID, "DSC_pH_")
+    )
+
+
+
+pH_june_trimmed
+```
+
+```{r}
+# some of these blanks are duplicated, I think
+pH_june_trimmed[which(duplicated(pH_june_trimmed)), ] # yep all duplicates are blanks
+
+#remove all of these
+
+pH_june_trimmed_tidyblanks = pH_june_trimmed[-which(duplicated(pH_june_trimmed)), ] 
+
+pH_june_trimmed_tidyblanks[which(duplicated(pH_june_trimmed_tidyblanks)), ]
+```
+add abs_pH_diff_subsample2 as a column to june, just so rbind will work when we keep it for sept
+```{r}
+pH_june_trimmed = pH_june_trimmed_tidyblanks %>%
+  mutate(abs_pH_diff_subsample2 = NA)
+```
+
+
+
+## Sept
+```{r}
+pH_sept_trimmed = pH_tidy_sept %>%
+  select(c(Sample_ID, date, pH_first_measurement, pH_second_measurement, pH_mean, abs_pH_diff, abs_pH_diff_subsample2))
+```
+
+# Join
+
+```{r}
+pH_all = rbind(pH_june_trimmed, pH_sept_trimmed)
+
+pH_all = pH_all %>%
+  select(Sample_ID, pH_mean, date, everything()) %>%
+  select(-c(pH_first_measurement, pH_second_measurement)) %>%
+  rename(pH_measurement_date = date)
+
+pH_all
+```
+
+export all pH data (though still missing sept blanks as of now)
 ```{r}
 
 local_path_tidydata <- paste0("Results/", 
@@ -70,8 +259,5 @@ local_path_tidydata <- paste0("Results/",
                      format(Sys.Date(), "%Y%m%d"), 
                      ".csv") #define what this local file name will be, with today's date
 
-write_csv(pH_tidy, local_path_tidydata)
+write_csv(pH_all, local_path_tidydata)
 ```
-
-
-
