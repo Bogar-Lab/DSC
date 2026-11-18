@@ -1,6 +1,6 @@
 ---
 title: "tidy_pH"
-output: html_document
+output: github_document
 ---
 
 ```{r}
@@ -8,6 +8,8 @@ library(googledrive)
 library(tidyverse)
 ```
 
+
+# June Data
 ```{r}
 
 name_of_transcription_file_on_drive = "DSC_pH_data_Lila_Aug2026" # copy the file's name exactly as it appears on google drive

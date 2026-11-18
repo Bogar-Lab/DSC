@@ -1,0 +1,559 @@
+---
+title: "pH_sept_QC_data_exploration"
+output: html_document
+---
+
+```{r}
+library(googledrive)
+library(tidyverse)
+```
+
+```{r}
+
+name_of_transcription_file_on_drive = "pH_data_sept_claude_transcribed_AG_manually_verified_20261118" # copy the file's name exactly as it appears on google drive
+
+dribble = drive_get(name_of_transcription_file_on_drive, shared_drive = 'Bogar Lab') # get necesary data for downloading
+
+local_path <- paste0("Inputs/", 
+                     name_of_transcription_file_on_drive, 
+                     "_downloaded-", 
+                     format(Sys.Date(), "%Y%m%d"), 
+                     ".csv") #define what this local file name will be, with today's date
+
+drive_download(dribble, type = "csv", path = local_path, overwrite = TRUE)
+
+transcribed_data = read.csv(local_path)
+
+```
+The following code was written by claude. Interjections in the markdown file between code chunks are me (AG).
+
+To start, I uploaded a copy of this^ csv to claude directly and gave following prompt:
+"Ok! I went through your whole list and checked on everything. I also manually verified values in all but the notes-containing columns. Here's the final version of the spreadsheet. I have this csv in my R environment as a dataframe called "transcribed_data". Can you write commented tidyverse code for me that will pull select insights from these data? I want to know a) if there are any rows in which the first and second measurements differ by 0.15 or more, and b) how different the pH measurements were for different subsamples of the same sample."
+
+Iteratively, I gave smaller additional prompts asking to add or edit chunks of the code I recieved after the first prompt. The following code chunks are an amalgamation (pieced together by me) of the code claude gave me after the first prompt. 
+
+
+
+```{r}
+# =============================================================================
+# pH data insights
+#   a) rows where the first and second pH measurements differ by >= 0.15
+#   b) how much pH varied across subsamples of the same sample
+#
+# Assumes the verified CSV is already loaded as `transcribed_data`.
+# (The CSV was saved in Windows-1252 because of the degree sign in the notes.
+#  If you ever re-read it: read_csv(path, locale = locale(encoding = "latin1")))
+# =============================================================================
+
+# ---- 0. Shared prep ---------------------------------------------------------
+pH_data <- transcribed_data |>
+  mutate(
+    # make sure the pH columns are numeric
+    across(c(pH_first_measurement, pH_second_measurement), as.numeric),
+
+    # second minus first: positive = pH drifted UP between the two readings
+    pH_diff = pH_second_measurement - pH_first_measurement,
+
+    # round before comparing to a threshold! Floating point means that e.g.
+    # 4.85 - 4.70 is stored as 0.14999999..., which would fail `>= 0.15`
+    abs_pH_diff = round(abs(pH_diff), 2),
+
+    # the pH we use for each measurement set = mean of the two readings
+    pH_mean = (pH_first_measurement + pH_second_measurement) / 2,
+
+    # CaCl2 blanks are rows too; flag them so they are easy to separate
+    is_blank = Sample_ID == "blank"
+  )
+
+```
+
+```{r}
+# ---- a) Rows where first and second measurements differ by >= 0.15 ----------
+large_diffs <- pH_data |>
+  filter(abs_pH_diff >= 0.15) |>
+  arrange(desc(abs_pH_diff)) |>
+  select(
+    Sample_ID, date, subsample, is_blank, fraction,
+    pH_first_measurement, pH_second_measurement, pH_diff, abs_pH_diff,
+    time_first, time_second, notes_transcription_verified_AG
+  )
+
+large_diffs  # view the rows
+
+# How common are they overall? (blanks included here)
+pH_data |>
+  summarise(
+    n_rows          = n(),
+    n_large_diff    = sum(abs_pH_diff >= 0.15, na.rm = TRUE),
+    pct_large_diff  = 100 * n_large_diff / n_rows,
+    median_abs_diff = median(abs_pH_diff, na.rm = TRUE)
+  )
+```
+
+Some of these ^ were re-done successfully. Find just the samples (excluding blanks) where ALL subsamples measured had large diffs
+```{r}
+# Sample_IDs where EVERY measured row (subsample) has a first/second diff >= 0.15
+all_large_ids <- pH_data |>
+  filter(!is_blank) |>                         # drop CaCl2 blanks
+  group_by(Sample_ID) |>
+  filter(all(abs_pH_diff >= 0.15)) |>          # keep samples whose rows are all large
+  # filter(n() > 1) |>                         # uncomment to require 2+ subsamples
+  distinct(Sample_ID)
+
+# Keep only those samples' rows from the large_diffs table
+large_diffs_all_subsamples <- large_diffs |>
+  filter(!is_blank) |>
+  semi_join(all_large_ids, by = "Sample_ID")
+
+large_diffs_all_subsamples
+```
+Ok at least one of these (probably DSC_252) didn't get re-subsampled because there was a transcription error in my first round of claude transcriptions that I didn't catch, which I just fixed today. DSC_339 didn't get done, maybe because I selected diffs >0.15 instead of >= ?
+
+```{r}
+large_diffs <- pH_data |>
+  filter(abs_pH_diff >= 0.15) |>
+  arrange(desc(abs_pH_diff)) |>
+  select(
+    Sample_ID, date, subsample, is_blank, fraction,
+    pH_first_measurement, pH_second_measurement, pH_diff, abs_pH_diff,
+    time_first, time_second, notes_transcription_verified_AG
+  )
+
+large_diffs  # view the rows
+
+# How common are they overall? (blanks included here)
+pH_data |>
+  summarise(
+    n_rows          = n(),
+    n_large_diff    = sum(abs_pH_diff >= 0.15, na.rm = TRUE),
+    pct_large_diff  = 100 * n_large_diff / n_rows,
+    median_abs_diff = median(abs_pH_diff, na.rm = TRUE)
+  )
+
+```
+
+```{r}
+# ---- b) pH differences between subsamples of the same sample ----------------
+subsamples <- pH_data |>
+  filter(!is_blank) |>
+  # Every Sample_ID is its own sample (260A/260B and 332A/332B are treated as
+  # separate samples, NOT as subsamples of 260/332), so group by Sample_ID
+  # chronological order within each sample
+  arrange(Sample_ID, date) |>
+  group_by(Sample_ID) |>
+  # keep only samples measured more than once
+  filter(n() > 1) |>
+  mutate(
+    set_order       = row_number(),                 # 1 = earliest measurement set
+    diff_from_first = pH_mean - first(pH_mean)      # later set minus earliest set
+  ) |>
+  ungroup()
+
+# One row per sample: all pH values (chronological) and how far apart they are
+sample_summary <- subsamples |>
+  group_by(Sample_ID) |>
+  summarise(
+    n_sets   = n(),
+    dates    = str_c(date, collapse = " | "),
+    pH_means = str_c(sprintf("%.2f", pH_mean), collapse = " | "),
+    pH_range = max(pH_mean) - min(pH_mean),   # max - min across subsamples
+    pH_sd    = sd(pH_mean),
+    # verified notes from each measurement set, in the same chronological order
+    # as dates/pH_means, each prefixed with its date; blank notes show "(none)"
+    notes    = str_c(
+      date, ": ",
+      if_else(
+        is.na(notes_claude_transcription_not_verified_unless_marked
+) | notes_claude_transcription_not_verified_unless_marked
+ == "",
+        "(none)",
+        notes_claude_transcription_not_verified_unless_marked
+      ),
+      collapse = " || "
+    ),
+    .groups  = "drop"
+  ) |>
+  arrange(desc(pH_range))
+
+sample_summary  # view the per-sample table
+
+# Overall: typical disagreement between subsamples
+sample_summary |>
+  summarise(
+    n_samples          = n(),
+    median_range       = median(pH_range),
+    mean_range         = mean(pH_range),
+    max_range          = max(pH_range),
+    n_range_ge_0.15    = sum(round(pH_range, 2) >= 0.15)
+  )
+
+# Is there a direction? Are later subsamples systematically higher or lower
+# than the earliest one?
+subsamples |>
+  filter(set_order > 1) |>
+  summarise(
+    n_comparisons = n(),
+    mean_diff     = mean(diff_from_first),
+    n_higher      = sum(diff_from_first > 0),
+    n_lower       = sum(diff_from_first < 0)
+  )
+
+# Quick visual: one row per sample, one dot per subsample, ordered by range
+ggplot(
+  subsamples,
+  aes(
+    x = pH_mean,
+    y = fct_reorder(Sample_ID, pH_mean, .fun = \(x) max(x) - min(x))
+  )
+) +
+  geom_line(aes(group = Sample_ID), colour = "grey70") +   # joins subsamples
+  geom_point(aes(colour = factor(set_order)), size = 3) +
+  labs(
+    x = "pH (mean of first and second readings)",
+    y = NULL,
+    colour = "Measurement set\n(chronological)",
+    title = "pH of repeat subsamples of the same sample"
+  ) +
+  theme_minimal()
+```
+Constrict this to the samples which I re-subsampled for quality control alone
+```{r}
+sample_summary <- sample_summary |>
+  mutate(
+    # Pull out "measuring 2nd pH subsample" plus everything after it, up to the
+    # end of that measurement set's note. Sets in `notes` are joined with " || ",
+    # so the lazy .*? stops at the next " || " (or at the end of the string),
+    # which keeps text from other sets out of the result.
+    # Samples where the phrase doesn't appear get NA.
+    redo_reason = str_extract(
+      notes,
+      "measuring 2nd pH subsample.*?(?= \\|\\| |$)"
+    )
+  )
+
+QC_results = sample_summary %>%
+  filter(str_detect(redo_reason, "QC"))
+
+QC_results
+
+# Overall: typical disagreement between subsamples
+QC_results |>
+  summarise(
+    n_samples          = n(),
+    median_range       = median(pH_range),
+    mean_range         = mean(pH_range),
+    max_range          = max(pH_range),
+    n_range_ge_0.15    = sum(round(pH_range, 2) >= 0.15)
+  )
+
+# Is there a direction? Are later subsamples systematically higher or lower
+# than the earliest one?
+subsamples |>
+  filter(set_order > 1) |>
+  filter(str_detect(notes_claude_transcription_not_verified_unless_marked, "QC")) |>
+  summarise(
+    n_comparisons = n(),
+    mean_diff     = mean(diff_from_first),
+    n_higher      = sum(diff_from_first > 0),
+    n_lower       = sum(diff_from_first < 0)
+  )
+
+# Quick visual: one row per sample, one dot per subsample, ordered by range
+ggplot(
+  subsamples %>% filter(Sample_ID %in% QC_results$Sample_ID),
+  aes(
+    x = pH_mean,
+    y = fct_reorder(Sample_ID, pH_mean, .fun = \(x) max(x) - min(x))
+  )
+) +
+  geom_line(aes(group = Sample_ID), colour = "grey70") +   # joins subsamples
+  geom_point(aes(colour = factor(set_order)), size = 3) +
+  labs(
+    x = "pH (mean of first and second readings)",
+    y = NULL,
+    colour = "Measurement set\n(chronological)",
+    title = "pH of repeat subsamples of the same sample"
+  ) +
+  theme_minimal()
+```
+asked claude to make me this visual ^ with the actual readings, not the means
+
+
+What if I did that for all the samples
+```{r}
+all_measurements <- pH_data |>
+  filter(!is_blank) |>
+  # Every Sample_ID is its own sample (260A/260B and 332A/332B are treated as
+  # separate samples, NOT as subsamples of 260/332), so group by Sample_ID
+  # chronological order within each sample
+  arrange(Sample_ID, date) |>
+  group_by(Sample_ID) |>
+  # keep only samples measured more than once
+  mutate(
+    set_order       = row_number(),                 # 1 = earliest measurement set
+    diff_from_first = pH_mean - first(pH_mean)      # later set minus earliest set
+  ) |>
+  ungroup()
+
+# ---- Reshape: one row per reading (first / second) per set -------------------
+all_long <- all_measurements |>
+  # two columns -> one `pH` column plus a `reading` label
+  pivot_longer(
+    cols      = c(pH_first_measurement, pH_second_measurement),
+    names_to  = "reading",
+    values_to = "pH"
+  ) |>
+  mutate(
+    reading  = if_else(reading == "pH_first_measurement", "First measurement", "Second measurement"),
+    # order samples by the range of their set means (same ordering as before;
+    # pH_mean is the per-set mean, so its max - min is the sample's pH_range)
+    sample_f = fct_reorder(Sample_ID, pH_mean, .fun = \(x) max(x) - min(x))
+  ) |>
+  # Numeric y position: one row per sample, with each measurement set nudged up
+  # or down so overlapping sets stay visible
+  group_by(Sample_ID) |>
+  mutate(
+    y_pos = as.numeric(sample_f) +
+      0.3 * (set_order - (min(set_order) + max(set_order)) / 2)
+  ) |>
+  ungroup()
+
+# ---- Plot ---------------------------------------------------------------------
+ggplot(all_long, aes(x = pH, y = y_pos, colour = factor(set_order))) +
+  # short line joining the first and second reading within the same set
+  geom_path(aes(group = interaction(Sample_ID, set_order)), linewidth = 0.7) +
+  # one point per reading; shape shows which reading it was
+  geom_point(aes(shape = reading), size = 3) +
+  # put sample names back on the y axis (it is numeric because of the nudging)
+  scale_y_continuous(
+    breaks = seq_along(levels(all_long$sample_f)),
+    labels = levels(all_long$sample_f)
+  ) +
+  scale_shape_manual(values = c("First measurement" = 16, "Second measurement" = 17)) +
+  labs(
+    x      = "pH",
+    y      = NULL,
+    colour = "Measurement set\n(chronological)",
+    shape  = NULL,
+    title  = "All pH measurements"
+  ) +
+  theme_minimal()
+```
+Asked claude to improve this ^
+
+```{r}
+# All samples: every measurement (first/second) in every measurement set,
+# with sets greyed out when a later set was done to replace them.
+# Needs `pH_data` from pH_insights.R.
+# Terminology: a "measurement" is one pH value (first or second reading);
+# a "measurement set" is one subsample's pair of measurements.
+
+library(tidyverse)
+
+# ---- 1. One row per measurement set -------------------------------------------
+all_measurements <- pH_data |>
+  filter(!is_blank) |>
+  # each Sample_ID is its own sample; sets in chronological order
+  arrange(Sample_ID, date) |>
+  group_by(Sample_ID) |>
+  mutate(
+    set_order       = row_number(),                    # 1 = earliest set
+    n_sets          = n(),
+    pH_range        = max(pH_mean) - min(pH_mean),     # spread of set means
+    diff_from_first = pH_mean - first(pH_mean),        # later set minus earliest set
+
+    # TRUE if this set was done to replace an earlier one: either every set from
+    # 11/17, or a set whose note says it replaces the first subsample data
+    # (str_detect() gives NA for missing notes, so coalesce() turns that to FALSE)
+    is_replacement  = date == 20261117 |
+      coalesce(
+        str_detect(
+          notes_claude_transcription_not_verified_unless_marked,
+          "to replace first subsample"
+        ),
+        FALSE
+      ),
+
+    # a set is "replaced" when the NEXT set of the same sample is a replacement
+    replaced        = lead(is_replacement, default = FALSE)
+  ) |>
+  ungroup() |>
+  mutate(
+    # samples ordered by pH_range (same value on every row of a sample)
+    sample_f   = fct_reorder(Sample_ID, pH_range),
+    # colour key: grey for replaced sets, otherwise the set number
+    set_status = if_else(replaced, "Replaced", as.character(set_order)),
+    # numeric y position: one row per sample, sets nudged up/down so overlapping
+    # sets stay visible
+    y_pos      = as.numeric(sample_f) + 0.3 * (set_order - (n_sets + 1) / 2)
+  )
+
+# ---- 2. One row per measurement ------------------------------------------------
+all_long <- all_measurements |>
+  pivot_longer(
+    cols         = c(pH_first_measurement, pH_second_measurement),
+    names_to     = "measurement",
+    names_pattern = "pH_(.*)_measurement",       # keeps "first" / "second"
+    values_to    = "pH"
+  ) |>
+  mutate(measurement = str_c(str_to_sentence(measurement), " measurement")) |>
+  # draw replaced (grey) sets first so they sit underneath the others
+  arrange(desc(replaced))
+
+# ---- 3. Plot ---------------------------------------------------------------------
+all_sept_pH_plot = ggplot(all_long, aes(x = pH, y = y_pos, colour = set_status)) +
+  # short line joining the two measurements within a measurement set
+  geom_path(aes(group = interaction(Sample_ID, set_order)), linewidth = 0.7) +
+  # one point per measurement; shape shows first vs second
+  geom_point(aes(shape = measurement), size = 2.5) +
+  # sample names back on the y axis (numeric because of the nudging)
+  scale_y_continuous(
+    breaks = seq_along(levels(all_long$sample_f)),
+    labels = levels(all_long$sample_f)
+  ) +
+  scale_colour_manual(
+    values = c("1" = "#1b9e77", "2" = "#d95f02", "3" = "#7570b3", "Replaced" = "grey70")
+  ) +
+  scale_shape_manual(
+    values = c("First measurement" = 16, "Second measurement" = 17)
+  ) +
+  labs(
+    x      = "pH",
+    y      = NULL,
+    colour = "Subsample\n(grey = replaced with new pH subsample,\nerror suspected in initial measurements)",
+    shape  = "Measurement",
+    title  = "All pH measurements of September soil samples"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 7))
+
+all_sept_pH_plot
+```
+
+```{r}
+# With ~100 samples the plot needs to be tall, e.g.:
+ggsave("Results/all_sept_pH_measurements.png", plot = all_sept_pH_plot, height = 0.17 * nlevels(all_long$sample_f) + 2, width = 8)
+```
+
+
+
+
+```{r}
+# QC re-subsamples only, reusing `all_long` from the all-samples chunk
+# (all_measurements_plot.R) instead of rebuilding the same data a second time.
+# Needs `all_long` (from that chunk) and `QC_results` (from your QC chunk).
+# Terminology: a "measurement" is one pH value (first or second); a
+# "measurement set" is one subsample's pair of measurements.
+
+# ---- 1. Shared plotting function (replaces the ggplot() call in BOTH chunks) --
+plot_measurements <- function(data, title) {
+  ggplot(data, aes(x = pH, y = y_pos, colour = set_status)) +
+    # short line joining the two measurements within a measurement set
+    geom_path(aes(group = interaction(Sample_ID, set_order)), linewidth = 0.7) +
+    # one point per measurement; shape shows first vs second
+    geom_point(aes(shape = measurement), size = 3) +
+    # sample names back on the y axis (numeric because of the nudging)
+    scale_y_continuous(
+      breaks = seq_along(levels(data$sample_f)),
+      labels = levels(data$sample_f)
+    ) +
+    scale_colour_manual(
+      values = c("1" = "#1b9e77", "2" = "#d95f02", "3" = "#7570b3", "Replaced" = "grey70")
+    ) +
+    scale_shape_manual(
+      values = c("First measurement" = 16, "Second measurement" = 17)
+    ) +
+    labs(
+      x      = "pH",
+      y      = NULL,
+      colour = "Subsample",
+      shape  = "Measurement",
+      title  = title
+    ) +
+    theme_minimal()
+}
+
+# ---- 2. QC samples only ----------------------------------------------------------
+QC_long <- all_long |>
+  filter(Sample_ID %in% QC_results$Sample_ID) |>
+  mutate(
+    # drop levels of samples that were filtered out; as.numeric() then
+    # renumbers the remaining samples 1..k, so there are no gaps on the y axis
+    # (the relative order by pH_range is unchanged)
+    sample_f = fct_drop(sample_f),
+    y_pos    = as.numeric(sample_f) + 0.3 * (set_order - (n_sets + 1) / 2)
+  )
+
+plot_measurements(QC_long, "pH measurements of QC re-subsamples")
+
+# In the all-samples chunk, the ggplot() call becomes:
+# plot_measurements(all_long, "All pH measurements")
+```
+
+asked claude to reflect the distance between dates somehow
+
+```{r}
+# QC re-subsamples only, reusing `all_long` from the all-samples chunk.
+# New: each sample's y-axis label also shows how many days apart its subsamples
+# were measured. Needs `all_long` and `QC_results`.
+# Terminology: a "measurement" is one pH value (first or second); a
+# "subsample" is one subsample's pair of measurements.
+
+# ---- 1. Shared plotting function ----------------------------------------------
+# show_days = TRUE adds "(N d apart)" to the y-axis labels; it needs a
+# `days_between` column in `data` (created in section 2 below).
+plot_measurements <- function(data, title, show_days = FALSE) {
+
+  # y-axis labels: sample names, optionally with the gap between subsamples
+  y_labels <- levels(data$sample_f)
+  if (show_days) {
+    days <- data |>
+      distinct(sample_f, days_between) |>
+      arrange(sample_f)                      # same order as the factor levels
+    y_labels <- str_c(days$sample_f, "  (", days$days_between, " d apart)")
+  }
+
+  ggplot(data, aes(x = pH, y = y_pos, colour = set_status)) +
+    # short line joining the two measurements within a subsample
+    geom_path(aes(group = interaction(Sample_ID, set_order)), linewidth = 0.7) +
+    # one point per measurement; shape shows first vs second
+    geom_point(aes(shape = measurement), size = 3) +
+    # sample names (and days apart) on the y axis; numeric because of the nudging
+    scale_y_continuous(
+      breaks = seq_along(levels(data$sample_f)),
+      labels = y_labels
+    ) +
+    scale_colour_manual(
+      values = c("1" = "#1b9e77", "2" = "#d95f02", "3" = "#7570b3", "Replaced" = "grey70")
+    ) +
+    scale_shape_manual(
+      values = c("First measurement" = 16, "Second measurement" = 17)
+    ) +
+    labs(
+      x      = "pH",
+      y      = NULL,
+      colour = "Subsample",
+      shape  = "Measurement",
+      title  = title
+    ) +
+    theme_minimal()
+}
+
+# ---- 2. QC samples only ----------------------------------------------------------
+QC_long <- all_long |>
+  filter(Sample_ID %in% QC_results$Sample_ID) |>
+  mutate(
+    # drop levels of filtered-out samples so the y axis has no gaps
+    sample_f = fct_drop(sample_f),
+    y_pos    = as.numeric(sample_f) + 0.3 * (set_order - (n_sets + 1) / 2),
+    # `date` looks like 20261105; ymd() turns it into a real date
+    date_parsed = lubridate::ymd(date)
+  ) |>
+  # days between a sample's first and last subsample
+  group_by(Sample_ID) |>
+  mutate(days_between = as.numeric(max(date_parsed) - min(date_parsed))) |>
+  ungroup()
+
+plot_measurements(QC_long, "pH measurements of QC re-subsamples", show_days = TRUE)
+```
+
